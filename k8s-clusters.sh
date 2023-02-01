@@ -155,16 +155,27 @@ kind_clab_connect() {
 }
 
 docker_net_config () {
+    local bond="bond0"
     local node="${1}"
     local itf="${2}"
     local octect="${3}"
     local netwk="${4}"
+    local VLANS=(251 252)
     echo Setting "$node and interface ${itf} to ${netwk}.${octect}/24"
-    docker exec -i "$node" bash -c "ip link set ${itf} down; ip link set ${itf} up mtu 9500; ip addr add ${netwk}.${octect}/24 dev ${itf}; ip link set ${itf} up;"
+#    docker exec -i "$node" bash -c "ip link set ${itf} down; ip link set ${itf} up mtu 9500; ip addr add ${netwk}.${octect}/24 dev ${itf}; ip link set ${itf} up;"
+#    sleep 2
+#    echo docker exec -i "$node" bash -c "ip route del default; ip route add default via ${netwk}.1"
+#    docker exec -i "$node" bash -c "ip route del default; ip route add default via ${netwk}.1"
+    docker exec -i "$node" bash -c "ip link add ${bond} type bond; ip link set ${itf} down; ip link set ${itf} master ${bond}; ip link set ${bond} up mtu 9500; ip addr add ${netwk}.${octect}/24 dev ${bond}"
     sleep 2
-    echo docker exec -i "$node" bash -c "ip route del default; ip route add default via ${netwk}.1"
-    docker exec -i "$node" bash -c "ip route del default; ip route add default via ${netwk}.1"
-    sleep 2
+
+    for vlan in "${VLANS[@]}"
+    do
+        echo "Setting up ${vlan} at ${bond} in ${node}"
+        docker exec -i "$node" bash -c "ip link add link ${bond} name VLAN-${vlan} type vlan id ${vlan}; ip link set dev VLAN-${vlan} up"
+        sleep 2                                
+    done                
+
 }
 
 kind_net_config() {
