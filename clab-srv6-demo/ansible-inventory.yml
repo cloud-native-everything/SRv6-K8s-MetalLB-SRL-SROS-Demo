@@ -1,0 +1,56 @@
+all:
+  children:
+    bridge:
+      hosts:
+        clab-srv6-demo-R2-R4:
+          ansible_host: 
+        clab-srv6-demo-R3-R5:
+          ansible_host: 
+    linux:
+      hosts:
+        clab-srv6-demo-pushgateway:
+          ansible_host: 172.100.20.115
+    srl:
+      hosts:
+        clab-srv6-demo-BORDER-DC:
+          ansible_host: 172.100.20.125
+        clab-srv6-demo-LEAF-DC-1:
+          ansible_host: 172.100.20.121
+        clab-srv6-demo-LEAF-DC-2:
+          ansible_host: 172.100.20.122
+        clab-srv6-demo-LEAF-E1-1:
+          ansible_host: 172.100.20.131
+        clab-srv6-demo-LEAF-E2-1:
+          ansible_host: 172.100.20.141
+        clab-srv6-demo-SPINE-DC-1:
+          ansible_host: 172.100.20.123
+        clab-srv6-demo-SPINE-DC-2:
+          ansible_host: 172.100.20.124
+    vr-sros:
+      hosts:
+        clab-srv6-demo-R1:
+          ansible_host: 172.100.20.9
+        clab-srv6-demo-R11:
+          ansible_host: 172.100.20.11
+        clab-srv6-demo-R12:
+          ansible_host: 172.100.20.12
+        clab-srv6-demo-R2:
+          ansible_host: 172.100.20.2
+        clab-srv6-demo-R21:
+          ansible_host: 172.100.20.21
+        clab-srv6-demo-R22:
+          ansible_host: 172.100.20.22
+        clab-srv6-demo-R3:
+          ansible_host: 172.100.20.3
+        clab-srv6-demo-R31:
+          ansible_host: 172.100.20.31
+        clab-srv6-demo-R32:
+          ansible_host: 172.100.20.32
+        clab-srv6-demo-R4:
+          ansible_host: 172.100.20.4
+        clab-srv6-demo-R5:
+          ansible_host: 172.100.20.5
+        clab-srv6-demo-R6:
+          ansible_host: 172.100.20.6
+        clab-srv6-demo-R7:
+          ansible_host: 172.100.20.7

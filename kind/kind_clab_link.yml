@@ -1,0 +1,16 @@
+edge1_link1:
+  orig: "clab-srv6-demo-LEAF-E1-1:e1-10"
+  dest: "edge1-control-plane:e1-1"
+  ipv4: "192.168.201.101"
+edge2_link1:
+  orig: "clab-srv6-demo-LEAF-E2-1:e1-10"
+  dest: "edge2-control-plane:e1-1"
+  ipv4: "192.168.202.101"  
+datacenter_link1:
+  orig: "clab-srv6-demo-LEAF-DC-1:e1-10"
+  dest: "datacenter-worker:e1-1"
+  ipv4: "192.168.101.101"  
+datacenter_link2:
+  orig: "clab-srv6-demo-LEAF-DC-2:e1-10"
+  dest: "datacenter-worker2:e1-1"
+  ipv4: "192.168.101.102"  

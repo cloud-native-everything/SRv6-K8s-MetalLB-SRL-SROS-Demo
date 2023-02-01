@@ -1,0 +1,15 @@
+---
+- name: "Provision dependencies for the Telus IPSec GW use-case"
+  hosts: "{{ target_blade }}"
+  gather_facts: yes
+  roles:
+    #- dns
+    #- docker
+    #- go
+    #- clab
+    #- jfrog
+    #- kind
+    #- kubectl
+    #- helm
+    - gnmic
+  remote_user: "{{ ssh_remote_user }}"

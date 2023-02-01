@@ -1,0 +1,10 @@
+# The suggested repo (fury.io) is dead...
+- name: "Install clab"
+  become: true
+  shell: "bash -c \"$(curl -sL https://get-clab.srlinux.dev)\""
+
+- name: "Test that clab works"
+  shell: "clab help"
+
+- name: "Register bash completion"
+  shell: "bash -lc 'clab completion bash | sudo tee /etc/bash_completion.d/containerlab &>/dev/null'"

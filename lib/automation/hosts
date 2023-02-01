@@ -1,0 +1,407 @@
+all:
+  hosts:
+    blade-a1:
+      mgmt_ip: 10.168.58.11
+      ilo_ip: 10.168.58.201
+    blade-a2:
+      mgmt_ip: 10.168.58.12
+      ilo_ip: 10.168.58.202
+    blade-a3:
+      mgmt_ip: 10.168.58.13
+      ilo_ip: 10.168.58.203
+    blade-a4:
+      mgmt_ip: 10.168.58.14
+      ilo_ip: 10.168.58.204
+    blade-a5:
+      mgmt_ip: 10.168.58.15
+      ilo_ip: 10.168.58.205
+    blade-a6:
+      mgmt_ip: 10.168.58.16
+      ilo_ip: 10.168.58.206
+    blade-a7:
+      mgmt_ip: 10.168.58.17
+      ilo_ip: 10.168.58.207
+    blade-a8:
+      mgmt_ip: 10.168.58.18
+      ilo_ip: 10.168.58.208
+    blade-a9:
+      mgmt_ip: 10.168.58.19
+      ilo_ip: 10.168.58.209
+    blade-a10:
+      mgmt_ip: 10.168.58.20
+      ilo_ip: 10.168.58.210
+    blade-a11:
+      mgmt_ip: 10.168.58.21
+      ilo_ip: 10.168.58.211
+    blade-a12:
+      mgmt_ip: 10.168.58.22
+      ilo_ip: 10.168.58.212
+    blade-a13:
+      mgmt_ip: 10.168.58.23
+      ilo_ip: 10.168.58.213
+    blade-a14:
+      mgmt_ip: 10.168.58.24
+      ilo_ip: 10.168.58.214
+    blade-a15:
+      mgmt_ip: 10.168.58.25
+      ilo_ip: 10.168.58.215
+    blade-a16:
+      mgmt_ip: 10.168.58.26
+      ilo_ip: 10.168.58.216
+    blade-b1:
+      mgmt_ip: 10.168.58.31
+      ilo_ip: 10.168.58.217
+    blade-b2:
+      mgmt_ip: 10.168.58.32
+      ilo_ip: 10.168.58.218
+    blade-b3:
+      mgmt_ip: 10.168.58.33
+      ilo_ip: 10.168.58.219
+    blade-b4:
+      mgmt_ip: 10.168.58.34
+      ilo_ip: 10.168.58.220
+    blade-b5:
+      mgmt_ip: 10.168.58.35
+      ilo_ip: 10.168.58.221
+    blade-b6:
+      mgmt_ip: 10.168.58.36
+      ilo_ip: 10.168.58.222
+    blade-b7:
+      mgmt_ip: 10.168.58.37
+      ilo_ip: 10.168.58.223
+    blade-b8:
+      mgmt_ip: 10.168.58.38
+      ilo_ip: 10.168.58.224
+    blade-b9:
+      mgmt_ip: 10.168.58.39
+      ilo_ip: 10.168.58.225
+    blade-b10:
+      mgmt_ip: 10.168.58.40
+      ilo_ip: 10.168.58.226
+    blade-b11:
+      mgmt_ip: 10.168.58.41
+      ilo_ip: 10.168.58.227
+    blade-b12:
+      mgmt_ip: 10.168.58.42
+      ilo_ip: 10.168.58.228
+    blade-b13:
+      mgmt_ip: 10.168.58.43
+      ilo_ip: 10.168.58.229
+    blade-b14:
+      mgmt_ip: 10.168.58.44
+      ilo_ip: 10.168.58.230
+    blade-b15:
+      mgmt_ip: 10.168.58.45
+      ilo_ip: 10.168.58.231
+    blade-b16:
+      mgmt_ip: 10.168.58.46
+      ilo_ip: 10.168.58.232
+    blade-c1:
+      mgmt_ip: 10.167.58.11
+      ilo_ip: 10.175.58.201
+    blade-c2:
+      mgmt_ip: 10.167.58.12
+      ilo_ip: 10.175.58.202
+    blade-c3:
+      mgmt_ip: 10.167.58.13
+      ilo_ip: 10.175.58.203
+    blade-c4:
+      mgmt_ip: 10.167.58.14
+      ilo_ip: 10.175.58.204
+    blade-c5:
+      mgmt_ip: 10.167.58.15
+      ilo_ip: 10.175.58.205
+    blade-c6:
+      mgmt_ip: 10.167.58.16
+      ilo_ip: 10.175.58.206
+    blade-c7:
+      mgmt_ip: 10.167.58.17
+      ilo_ip: 10.175.58.207
+    blade-c8:
+      mgmt_ip: 10.167.58.18
+      ilo_ip: 10.175.58.208
+    blade-c9:
+      mgmt_ip: 10.167.58.19
+      ilo_ip: 10.175.58.209
+    blade-c10:
+      mgmt_ip: 10.167.58.20
+      ilo_ip: 10.175.58.210
+    blade-c11:
+      mgmt_ip: 10.167.58.21
+      ilo_ip: 10.175.58.211
+    blade-c12:
+      mgmt_ip: 10.167.58.22
+      ilo_ip: 10.175.58.212
+    blade-c13:
+      mgmt_ip: 10.167.58.23
+      ilo_ip: 10.175.58.213
+    blade-c14:
+      mgmt_ip: 10.167.58.24
+      ilo_ip: 10.175.58.214
+    blade-c15:
+      mgmt_ip: 10.167.58.25
+      ilo_ip: 10.175.58.215
+    blade-c16:
+      mgmt_ip: 10.167.58.26
+      ilo_ip: 10.175.58.216
+    blade-d1:
+      mgmt_ip: 10.85.8.71
+      ilo_ip: 10.85.4.71
+    blade-d2:
+      mgmt_ip: 10.85.8.72
+      ilo_ip: 10.85.4.72
+    blade-d3:
+      mgmt_ip: 10.85.8.73
+      ilo_ip: 10.85.4.73
+    blade-d4:
+      mgmt_ip: 10.85.8.74
+      ilo_ip: 10.85.4.74
+    blade-d5:
+      mgmt_ip: 10.85.8.75
+      ilo_ip: 10.85.4.75
+    blade-d6:
+      mgmt_ip: 10.85.8.76
+      ilo_ip: 10.85.4.76
+    blade-d7:
+      mgmt_ip: 10.85.8.77
+      ilo_ip: 10.85.4.77
+    blade-d8:
+      mgmt_ip: 10.85.8.78
+      ilo_ip: 10.85.4.78
+    blade-d9:
+      mgmt_ip: 10.85.8.79
+      ilo_ip: 10.85.4.79
+    blade-d10:
+      mgmt_ip: 10.85.8.80
+      ilo_ip: 10.85.4.80
+    blade-d11:
+      mgmt_ip: 10.85.8.81
+      ilo_ip: 10.85.4.81
+    blade-d12:
+      mgmt_ip: 10.85.8.82
+      ilo_ip: 10.85.4.82
+    blade-d13:
+      mgmt_ip: 10.85.8.83
+      ansible_ssh_host: 10.85.8.83
+      ilo_ip: 10.85.4.83
+    blade-d14:
+      mgmt_ip: 10.85.8.84
+      ilo_ip: 10.85.4.84
+    blade-d15:
+      mgmt_ip: 10.85.8.85
+      ilo_ip: 10.85.4.85
+    blade-d16:
+      mgmt_ip: 10.85.8.86
+      ilo_ip: 10.85.4.86
+    blade-e1:
+      mgmt_ip: 10.85.8.101
+      ilo_ip: 10.85.4.101
+    blade-e2:
+      mgmt_ip: 10.85.8.102
+      ilo_ip: 10.85.4.102
+    blade-e3:
+      mgmt_ip: 10.85.8.103
+      ilo_ip: 10.85.4.103
+    blade-e4:
+      mgmt_ip: 10.85.8.104
+      ilo_ip: 10.85.4.104
+    blade-e5:
+      mgmt_ip: 10.85.8.105
+      ilo_ip: 10.85.4.105
+    blade-e6:
+      mgmt_ip: 10.85.8.106
+      ilo_ip: 10.85.4.106
+    blade-e7:
+      mgmt_ip: 10.85.8.107
+      ilo_ip: 10.85.4.107
+    blade-e8:
+      mgmt_ip: 10.85.8.108
+      ilo_ip: 10.85.4.108
+    blade-e9:
+      mgmt_ip: 10.85.8.109
+      ilo_ip: 10.85.4.109
+    blade-e10:
+      mgmt_ip: 10.85.8.110
+      ilo_ip: 10.85.4.110
+    blade-e11:
+      mgmt_ip: 10.85.8.111
+      ilo_ip: 10.85.4.111
+    blade-e12:
+      mgmt_ip: 10.85.8.112
+      ilo_ip: 10.85.4.112
+    blade-e13:
+      mgmt_ip: 10.85.8.113
+      ilo_ip: 10.85.4.113
+    blade-e14:
+      mgmt_ip: 10.85.8.114
+      ilo_ip: 10.85.4.114
+    blade-e15:
+      mgmt_ip: 10.85.8.115
+      ilo_ip: 10.85.4.115
+    blade-e16:
+      mgmt_ip: 10.85.8.116
+      ilo_ip: 10.85.4.116
+
+    blade-f1:
+      mgmt_ip: 10.85.8.151
+      ilo_ip: 10.85.4.151
+    blade-f2:
+      mgmt_ip: 10.85.8.152
+      ilo_ip: 10.85.4.152
+    blade-f3:
+      mgmt_ip: 10.85.8.153
+      ilo_ip: 10.85.4.153
+    blade-f4:
+      mgmt_ip: 10.85.8.154
+      ilo_ip: 10.85.4.154
+    blade-f5:
+      mgmt_ip: 10.85.8.155
+      ilo_ip: 10.85.4.155
+    blade-f6:
+      mgmt_ip: 10.85.8.156
+      ilo_ip: 10.85.4.156
+    blade-f7:
+      mgmt_ip: 10.85.8.157
+      ilo_ip: 10.85.4.157
+    blade-f8:
+      mgmt_ip: 10.85.8.158
+      ilo_ip: 10.85.4.158
+    blade-f9:
+      mgmt_ip: 10.85.8.159
+      ilo_ip: 10.85.4.159
+    blade-f10:
+      mgmt_ip: 10.85.8.160
+      ilo_ip: 10.85.4.160
+    blade-f11:
+      mgmt_ip: 10.85.8.161
+      ilo_ip: 10.85.4.161
+    blade-f12:
+      mgmt_ip: 10.85.8.162
+      ilo_ip: 10.85.4.162
+    blade-f13:
+      mgmt_ip: 10.85.8.163
+      ilo_ip: 10.85.4.163
+    blade-f14:
+      mgmt_ip: 10.85.8.164
+      ilo_ip: 10.85.4.164
+    blade-f15:
+      mgmt_ip: 10.85.8.165
+      ilo_ip: 10.85.4.165
+    blade-f16:
+      mgmt_ip: 10.85.8.166
+      ilo_ip: 10.85.4.166
+    blade-f17:
+      mgmt_ip: 10.85.8.167
+      ilo_ip: 10.85.4.167
+    blade-f18:
+      mgmt_ip: 10.85.8.168
+      ilo_ip: 10.85.4.168
+    blade-f19:
+      mgmt_ip: 10.85.8.169
+      ilo_ip: 10.85.4.169
+    blade-f20:
+      mgmt_ip: 10.85.8.170
+      ilo_ip: 10.85.4.170
+    blade-f21:
+      mgmt_ip: 10.85.8.171
+      ilo_ip: 10.85.4.171
+    blade-f22:
+      mgmt_ip: 10.85.8.172
+      ilo_ip: 10.85.4.172
+    blade-f23:
+      mgmt_ip: 10.85.8.173
+      ilo_ip: 10.85.4.173
+    blade-f24:
+      mgmt_ip: 10.85.8.174
+      ilo_ip: 10.85.4.174
+    blade-f25:
+      mgmt_ip: 10.85.8.175
+      ilo_ip: 10.85.4.175
+    blade-f26:
+      mgmt_ip: 10.85.8.176
+      ilo_ip: 10.85.4.176
+    blade-f27:
+      mgmt_ip: 10.85.8.177
+      ilo_ip: 10.85.4.177
+    blade-f28:
+      mgmt_ip: 10.85.8.178
+      ilo_ip: 10.85.4.178
+    vnonas1:
+      ansible_host: 10.167.58.69
+      ansible_user: admin
+      ansible_password: nso_312
+      ansible_become_pass: nso_312
+
+c-blades:
+  hosts:
+    blade-c[1:16]:
+  vars:
+    net_layout: dl360 # TODO rename this consistently to indicate c-blade-type
+    hp_gen: gen10
+    phys_data_nic: eno1
+    phys_sriov_nic1: eno5
+    phys_sriov_nic2: eno6
+    host_mgmt_bridge: mgmt_167 # Carefull, in the Nuage context there's also a mgmt_bridge!
+
+bl460c_gen9:
+  hosts:
+    blade-a[1:16]:
+    blade-b[1:16]:
+  vars:
+    net_layout: bl460c_vc
+    hp_gen: gen9
+    phys_data_nic: bond0
+    host_mgmt_bridge: mgmt_168 # Carefull, in the Nuage context there's also a mgmt_bridge!
+
+bl460c_gen8: # This is to check with actual hardware specs!!
+  hosts:
+    blade-d[1:4]:
+  vars:
+    net_layout: bl460c_vc
+    hp_gen: gen8
+    phys_data_nic: eno1
+    host_mgmt_bridge: oam # Carefull, in the Nuage context there's also a mgmt_bridge!
+    skiplegacyvlans: yes
+
+bl460c_gen7: # This is to check with actual hardware specs!!
+  hosts:
+    blade-d[5:16]:
+  vars:
+    net_layout: bl460c_vc
+    hp_gen: gen7
+    phys_data_nic: eno1
+    host_mgmt_bridge: oam # Carefull, in the Nuage context there's also a mgmt_bridge!
+    skiplegacyvlans: yes
+
+bl460c_gen10:
+  hosts:
+    blade-e[1:16]:
+  vars:
+    net_layout: bl460c_pt
+    hp_gen: gen10
+    phys_data_nic: eno1
+    host_mgmt_bridge: oam # Carefull, in the Nuage context there's also a mgmt_bridge!
+    skiplegacyvlans: yes
+
+f-blades-batch1:
+ hosts:
+   blade-f[1:16]:
+ vars:
+   net_layout: dl360_2mlx
+   hp_gen: gen10
+   phys_data_nic: ens1f0
+   phys_sriov_nic1: ens1f0
+   phys_sriov_nic2: ens2f0
+   host_mgmt_bridge: oam-os
+   skiplegacyvlans: yes
+
+
+f-blades-batch2:
+ hosts:
+   blade-f[17:28]:
+ vars:
+   net_layout: dl360_2mlx
+   hp_gen: gen10
+   phys_data_nic: eno1
+   host_mgmt_bridge: oam-os
+   skiplegacyvlans: yes

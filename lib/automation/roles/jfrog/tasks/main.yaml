@@ -1,0 +1,22 @@
+---
+- name: "Add JFrog GPG apt Key"
+  become: true
+  apt_key:
+    url: https://releases.jfrog.io/artifactory/jfrog-gpg-public/jfrog_public_gpg.key 
+    state: present
+
+- name: "Add JFrog Repository"
+  become: true
+  apt_repository:
+    repo: deb https://releases.jfrog.io/artifactory/jfrog-debs xenial contrib 
+    state: present
+
+- name: "Update apt and install jfrog (and the newer jf alias)"
+  become: true
+  apt: 
+    update_cache: yes
+    name: 
+      - jfrog-cli-v2
+      - jfrog-cli-v2-jf 
+      - jq
+    state: latest

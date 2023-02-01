@@ -1,0 +1,6 @@
+- name: "Install gnmic"
+  shell: "bash -c 'curl -sL https://get-gnmic.kmrd.dev | bash'"
+
+- name: "Install bash completion"
+  become: true
+  shell: "bash -c 'gnmic completion bash --skip-verify > /etc/bash_completion.d/gnmic'"

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: workloadinterface-templates
+  namespace: enc-nws-system
+data:
+  templates: |
+    templates:
+      - path: '/interface[name={{ .Spec.SwitchInterface.PortID }}]/subinterface[index={{ .Spec.ServerInterface.VlanID }}]'
+        payload: '{"admin-state":"enable","type":"bridged","vlan":{"encap":{"single-tagged":{"vlan-id":"{{ .Spec.ServerInterface.VlanID }}"}}}}'
+      - path: '/network-instance[name={{ .Spec.Subnet }}]/interface[name={{ .Spec.SwitchInterface.PortID }}.{{ .Spec.ServerInterface.VlanID }}]'
+        payload: ''

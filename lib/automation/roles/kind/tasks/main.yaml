@@ -1,0 +1,18 @@
+- name: "Install kind as go module"
+  shell: "bash -lc 'go install sigs.k8s.io/kind@v0.11.1'"
+
+- name: "Check that kind is successfully installed"
+  shell: "bash -lc 'kind version'"
+
+- name: "Add kind completion"
+  shell: "bash -lc 'kind completion bash | sudo tee /etc/bash_completion.d/kind &>/dev/null'"
+
+- name: "Disable apparmor"
+  become: yes
+  systemd:
+    name: apparmor
+    state: stopped
+    enabled: no
+
+- name: "Bootstrap initial kind cluster"
+  shell: "bash -lc 'kind get clusters | grep kind &>/dev/nulll || kind create cluster'"

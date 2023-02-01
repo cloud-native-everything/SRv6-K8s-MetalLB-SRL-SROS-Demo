@@ -1,0 +1,65 @@
+---
+- name: "Install required system packages"
+  when: ansible_facts['distribution'] == "Ubuntu"
+  become: yes
+  apt: 
+    state: latest 
+    update_cache: yes
+    name: 
+      - gzip
+      - tar
+
+- name: "Download go binaries"
+  get_url:
+    url: "{{ go_binary_release_address }}"
+    dest: "{{ go_tmp_dir }}/{{ go_archive_name }}"
+
+- name: Remove previous SDK if any
+  become: yes
+  file:
+    path: "{{ go_install_dir }}"
+    state: absent
+
+- name: Create SDK directory
+  become: yes
+  file:
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+    dest: "{{ go_install_dir }}"
+
+- name: Extract SDK
+  become: yes
+  unarchive:
+    src: "{{ go_tmp_dir }}/{{ go_archive_name }}"
+    remote_src: yes
+    extra_opts: "--strip-components=1"
+    dest: "{{ go_install_dir }}"
+    owner: root
+    group: root
+    creates: "{{ go_bin_dir }}"
+
+- name: "Add go location to $PATH"
+  become: yes
+  template:
+    src: 10-golang.sh.j2
+    dest: /etc/profile.d/10-golang.sh
+    mode: 0644
+
+- name: "Add $GOPATH to curent user $PATH"
+  lineinfile:
+    state: present
+    path: ~/.profile
+    line: "export PATH=\"$PATH:$(go env GOPATH)/bin\""
+
+- name: "Check that go is successfully installed"
+  shell: "bash -lc '[[ \"$(go version)\" =~ \"go{{ go_version }}\" ]]'"
+
+- name: Remove temp files
+  file:
+    path: "{{ go_tmp_dir }}/{{ go_archive_name }}"
+    state: absent
+
+- name: "Reset connection to propagate $PATH changes"
+  meta: reset_connection

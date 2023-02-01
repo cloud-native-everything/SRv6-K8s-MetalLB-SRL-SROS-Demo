@@ -1,0 +1,18 @@
+- op: add
+  path: /spec/versions/0/additionalPrinterColumns
+  value:
+    - description: Switch ID
+      jsonPath: .spec.switchID
+      name: Switch
+      type: string
+    - description: YANG path
+      jsonPath: .spec.path
+      name: Path
+      type: string
+    - description: state
+      jsonPath: .status.conditions[0].type
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date

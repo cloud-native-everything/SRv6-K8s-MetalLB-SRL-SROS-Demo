@@ -1,0 +1,49 @@
+---
+- name: "Install docker CE and set the nokia registry"
+  become: true
+  become_user: root
+  block:
+    - name: "Include Ubuntu install"
+      include_tasks: ubuntu-install.yaml
+      when: ansible_facts['distribution'] == "Ubuntu"
+
+    - name: "Register Nokia registry in /etc/hosts"
+      lineinfile:
+        dest: /etc/hosts
+        state: present
+        line: "{{ item.ip }} {{ item.name }}"
+      loop: "{{ docker_registries }}"
+
+    - name: "Set Nokia registry"
+      template:
+        src: "daemon.json.j2" 
+        dest: "/etc/docker/daemon.json" 
+        owner: "root" 
+        group: "root" 
+        mode: "0644"
+
+    - name: "Add docker group"
+      ansible.builtin.group:
+        name: docker
+        state: present
+
+    - name: "Add {{ ssh_remote_user }} to docker group"
+      user:
+        name: "{{ ssh_remote_user }}"
+        groups: docker
+        append: yes
+
+    - name: "Enable docker daemon"
+      systemd:
+        name: docker
+        state: restarted
+        enabled: yes
+
+    - name: "Enable containerd daemon"
+      systemd:
+        name: containerd
+        state: restarted
+        enabled: yes
+
+- name: "Reset connection to propagate group change"
+  meta: reset_connection

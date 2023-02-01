@@ -1,0 +1,33 @@
+- name: "Install required system packages"
+  become: true
+  apt: 
+    state: latest 
+    update_cache: yes
+    name: 
+      - apt-transport-https
+      - zip
+
+- name: "Add helm apt Key"
+  become: true
+  apt_key:
+    url: https://baltocdn.com/helm/signing.asc
+    state: present
+
+- name: "Add helm Repository"
+  become: true
+  apt_repository:
+    repo: deb https://baltocdn.com/helm/stable/debian/ all main
+    state: present
+
+- name: "Update apt and install helm"
+  become: true
+  apt: 
+    update_cache: yes 
+    name: helm 
+    state: latest
+
+- name: "Test that helm works"
+  shell: "helm help"
+
+- name: "Install completion"
+  shell: "bash -lc 'helm completion bash | sudo tee /etc/bash_completion.d/helm &>/dev/null'"

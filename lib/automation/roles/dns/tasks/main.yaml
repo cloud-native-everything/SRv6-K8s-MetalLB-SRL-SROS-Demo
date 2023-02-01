@@ -1,0 +1,53 @@
+---
+- name: "Install resolvconf"
+  become: yes
+  apt: 
+    state: latest 
+    update_cache: yes
+    name: 
+      - resolvconf
+      - dnsmasq
+- name: "Add Lab DNS to dsnmasq config"
+  become: yes
+  lineinfile:
+    path: /etc/dnsmasq.conf
+    line: "server={{ item }}"
+  loop: "{{ lab_dns }}"
+- name: "Add Nokia DNS to dsnmasq config"
+  become: yes
+  lineinfile:
+    path: /etc/dnsmasq.conf
+    line: "server=/int.net.nokia.com/{{ item }}"
+  loop: "{{ nokia_dns }}"
+- name: "Enable resolvconf"
+  become: yes
+  systemd:
+    name: resolvconf
+    state: restarted
+    enabled: yes
+- name: "Setup /etc/resolv.conf symlink"
+  become: yes
+  shell: resolvconf -u
+- name: "Disable systemd-resolved"
+  become: yes
+  systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: no
+- name: "Enable dnsmasq"
+  become: yes
+  systemd:
+    name: dnsmasq
+    state: restarted
+    enabled: yes
+- name: "Add gitconfig proxy settings"
+  shell: |
+    git config --global http.proxy {{ proxies.http }}
+    git config --global https.proxy {{ proxies.https }}
+- name: "Add global proxy env configs"
+  become: true
+  lineinfile: 
+    line: "export {{ item.key }}_proxy={{ item.value }}"
+    path: /etc/profile.d/corp-proxy.sh
+    create: yes
+  with_items: "{{ proxies | dict2items }}"

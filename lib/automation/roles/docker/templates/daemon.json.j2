@@ -1,0 +1,12 @@
+{
+    "insecure-registries": [
+    {% for registry in insecure_docker_registries %}
+        "{{ registry }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+    ],
+    "registry-mirrors": [
+    {% for registry in docker_registries %}
+        "https://{{ registry.name }}"{% if not loop.last %},{% endif %}
+    {% endfor %}
+    ]
+}

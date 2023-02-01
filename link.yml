@@ -1,0 +1,6 @@
+link1:
+  orig: srl_1
+  dest: cont_2
+link2:
+  orig: srl_2
+  dest: con_3  

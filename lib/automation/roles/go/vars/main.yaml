@@ -1,0 +1,6 @@
+go_version: 1.17.6
+go_archive_name: "go{{ go_version }}.linux-amd64.tar.gz"
+go_binary_release_address: "https://go.dev/dl/{{ go_archive_name }}"
+go_tmp_dir: /tmp
+go_install_dir: /usr/local/go
+go_bin_dir: /usr/local/go/bin
