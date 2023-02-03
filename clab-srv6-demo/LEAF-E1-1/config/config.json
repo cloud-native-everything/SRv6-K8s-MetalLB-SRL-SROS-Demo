@@ -4,10 +4,10 @@
       "generated-by": "SRLINUX",
       "name": "",
       "comment": "",
-      "created": "2023-02-02T23:18:29.223Z",
+      "created": "2023-02-03T22:00:04.651Z",
       "release": "v21.6.4",
       "enabled-yang-features": ["srl_nokia-features:anycast-gw", "srl_nokia-features:bridged", "srl_nokia-features:evpn", "srl_nokia-features:evpn-advertise-arp-nd-only-with-mac-table-entry", "srl_nokia-features:evpn-mh-pref-alg", "srl_nokia-features:evpn-mh-single-active", "srl_nokia-features:fixed", "srl_nokia-features:future-21-6", "srl_nokia-features:future-21-6-2", "srl_nokia-features:future-21-6-3", "srl_nokia-features:lacp-fallback", "srl_nokia-features:lag", "srl_nokia-features:mirroring", "srl_nokia-features:platform-7220-d3", "srl_nokia-features:port-breakout", "srl_nokia-features:ra-guard", "srl_nokia-features:reload-delay", "srl_nokia-features:storm-control", "srl_nokia-features:trident3", "srl_nokia-features:vxlan", "srl_nokia-features:warm-reboot"],
-      "checksum": "715780f09eed0c83$ea480f3537c0bdda78f945f34516d2c83ef6d954"
+      "checksum": "c4181f88ad110d09$27d5e995cb8abeba072230c39b957aceb5b3f3af"
     },
     "build": {
       "git-branch": "SRL_21_6_B1",
@@ -1934,23 +1934,23 @@
       "srl_nokia-interfaces-vlans:vlan-tagging": true,
       "subinterface": [
         {
-          "index": 3,
+          "index": 1001,
           "type": "srl_nokia-interfaces:bridged",
           "srl_nokia-interfaces-vlans:vlan": {
             "encap": {
               "single-tagged": {
-                "vlan-id": 3
+                "vlan-id": 1001
               }
             }
           }
         },
         {
-          "index": 4,
+          "index": 1002,
           "type": "srl_nokia-interfaces:bridged",
           "srl_nokia-interfaces-vlans:vlan": {
             "encap": {
               "single-tagged": {
-                "vlan-id": 4
+                "vlan-id": 1002
               }
             }
           }
@@ -2209,7 +2209,7 @@
           "name": "ethernet-1/10.251"
         },
         {
-          "name": "ethernet-1/20.4"
+          "name": "ethernet-1/20.1001"
         }
       ]
     },
@@ -2221,7 +2221,7 @@
           "name": "ethernet-1/10.252"
         },
         {
-          "name": "ethernet-1/20.3"
+          "name": "ethernet-1/20.1002"
         }
       ]
     },

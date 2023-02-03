@@ -3,12 +3,9 @@
 # Built on Wed Jun 22 14:38:17 PDT 2022 by builder in /builds/c/225B/R2/panos/main/sros
 # Configuration format version 22.5 revision 0
 
-# Generated 2023-01-19T19:36:20.0Z by admin from 172.31.255.29
-# Commit ID 2
-#   Committed 2023-01-19T19:36:20.0Z by admin (MD-CLI) from 172.31.255.29
-# Commit ID 1
-#   Committed 2023-01-19T19:31:31.7Z by system (MD-CLI) from Console
-#   Log       "System booted version B-22.5.R2."
+# Generated 2023-02-03T23:26:12.0Z by admin from 172.31.255.29
+# Commit ID 3
+#   Committed 2023-02-03T23:26:08.7Z by admin (MD-CLI) from 172.31.255.29
 
 configure {
     apply-groups ["baseport"]
@@ -971,7 +968,7 @@ configure {
                 group "ebgp" {
                     admin-state enable
                     as-override true
-                    peer-as 64514
+                    peer-as 65001
                     split-horizon true
                     send-communities {
                         extended false
@@ -986,15 +983,6 @@ configure {
                         policy ["vrf4-ebgp-export"]
                     }
                 }
-                neighbor "2001:db8:3001:704::2" {
-                    group "ebgp"
-                    family {
-                        ipv6 true
-                    }
-                    export {
-                        policy ["vrf4-ebgp-export"]
-                    }
-                }
             }
             interface "PE-to-CE" {
                 admin-state enable
@@ -1004,12 +992,7 @@ configure {
                         prefix-length 30
                     }
                 }
-                sap pxc-3.a:4 {
-                }
-                ipv6 {
-                    address 2001:db8:3001:704::1 {
-                        prefix-length 126
-                    }
+                sap pxc-3.a:1001 {
                 }
             }
         }
@@ -1064,7 +1047,7 @@ configure {
                 group "ebgp" {
                     admin-state enable
                     as-override true
-                    peer-as 64514
+                    peer-as 65002
                     split-horizon true
                     send-communities {
                         extended false
@@ -1088,7 +1071,7 @@ configure {
                         prefix-length 30
                     }
                 }
-                sap pxc-3.a:3 {
+                sap pxc-3.a:1002 {
                 }
             }
         }
@@ -1096,7 +1079,7 @@ configure {
             admin-state enable
             service-id 10012023
             customer "1001"
-            autonomous-system 64514
+            autonomous-system 65001
             bgp {
                 admin-state enable
                 min-route-advertisement 1
@@ -1119,15 +1102,6 @@ configure {
                         policy ["vrf1001-ebgp-export"]
                     }
                 }
-                neighbor "2001:db8:3001:704::1" {
-                    group "EBGP"
-                    family {
-                        ipv6 true
-                    }
-                    export {
-                        policy ["vrf1001-ebgp-export-ipv6"]
-                    }
-                }
             }
             interface "CE-to-PE" {
                 admin-state enable
@@ -1137,12 +1111,7 @@ configure {
                         prefix-length 30
                     }
                 }
-                sap pxc-3.b:4 {
-                }
-                ipv6 {
-                    address 2001:db8:3001:704::2 {
-                        prefix-length 126
-                    }
+                sap pxc-3.b:1001 {
                 }
             }
             interface "LAN" {
@@ -1153,12 +1122,7 @@ configure {
                         prefix-length 24
                     }
                 }
-                sap 1/1/c3/1:4 {
-                }
-                ipv6 {
-                    address 2001:db8:7:400::1 {
-                        prefix-length 56
-                    }
+                sap 1/1/c3/1:1001 {
                 }
             }
         }
@@ -1166,7 +1130,7 @@ configure {
             admin-state enable
             service-id 10022023
             customer "1002"
-            autonomous-system 64514
+            autonomous-system 65002
             bgp {
                 admin-state enable
                 min-route-advertisement 1
@@ -1198,7 +1162,7 @@ configure {
                         prefix-length 30
                     }
                 }
-                sap pxc-3.b:3 {
+                sap pxc-3.b:1002 {
                 }
             }
             interface "LAN" {
@@ -1209,7 +1173,7 @@ configure {
                         prefix-length 24
                     }
                 }
-                sap 1/1/c4/1:4 {
+                sap 1/1/c3/1:1002 {
                 }
             }
         }
@@ -1627,4 +1591,4 @@ persistent-indices {
     }
 }
 
-# Finished 2023-01-19T19:36:20.1Z
+# Finished 2023-02-03T23:26:12.1Z

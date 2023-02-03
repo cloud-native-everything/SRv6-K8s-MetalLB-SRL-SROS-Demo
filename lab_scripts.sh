@@ -12,10 +12,10 @@ start_all() {
     kubectl apply -f metallb/metallb-namespace.yaml --context kind-datacenter
     kubectl apply -f metallb/metallb-manifest.yaml --context kind-datacenter
     kubectl apply -f metallb/metallb-bgp-setup.yaml --context kind-datacenter
-    kubectl apply -f hello-app-python.yaml --context kind-datacenter
-    kubectl apply -f hello-app-lb.yaml --context kind-datacenter
-    kubectl apply -f ipvlan-cni.yaml --context kind-edge1
-    kubectl apply -f ipvlan-pods.yaml --context kind-edge1
+    kubectl apply -f hello-app-python-datacenter.yaml --context kind-datacenter
+    kubectl apply -f hello-app-lb-datacenter.yaml --context kind-datacenter
+    kubectl apply -f ipvlan-cni-edge1.yaml --context kind-edge1
+    kubectl apply -f ipvlan-pods-edge1.yaml --context kind-edge1
 }
 
 clean_all() {

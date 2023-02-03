@@ -14,7 +14,7 @@ data:
           hostname = os.environ['HOSTNAME']
           worker = os.environ['K8S_NODE_NAME']
           text = f"K8s Node: {worker} - Hostname: {hostname}\n"
-          self.wfile.write(bytes(text, "utf8"))
+          self.wfile.write(bytes(text, "utf8"))    
     port = int(os.environ['HTTP_APP_PORT'])
     httpd = HTTPServer(('0.0.0.0', port), SimpleHTTPRequestHandler)
     httpd.serve_forever()
@@ -23,25 +23,23 @@ data:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ipvlan-deploy
+  name: hello-node-py-deploy
 spec:
   selector:
     matchLabels:
-      app: ipvlan-pod
+      app: hello-node-python
   replicas: 8
   template:
     metadata:
       labels:
-        app: ipvlan-pod
-      annotations:
-        k8s.v1.cni.cncf.io/networks: ipvlan-1001
+        app: hello-node-python
     spec:
       volumes:
       - name: tftpboot	  # The name of the volume
         configMap:
           name: py-tftpboot
       containers:
-        - name: ipvlan-pod
+        - name: hello-node-python-app
           image: python:latest
           imagePullPolicy: Never
           command: ["python3"]
@@ -55,7 +53,7 @@ spec:
               fieldRef:
                 fieldPath: spec.nodeName
           - name: HTTP_APP_PORT
-            value: "8080"
+            value: "8080"                
           volumeMounts:
           - name: tftpboot
             mountPath: /tftpboot

@@ -4,10 +4,10 @@
       "generated-by": "SRLINUX",
       "name": "",
       "comment": "",
-      "created": "2023-02-02T22:57:41.230Z",
+      "created": "2023-02-03T22:02:05.181Z",
       "release": "v21.6.4",
       "enabled-yang-features": ["srl_nokia-features:anycast-gw", "srl_nokia-features:bridged", "srl_nokia-features:evpn", "srl_nokia-features:evpn-advertise-arp-nd-only-with-mac-table-entry", "srl_nokia-features:evpn-mh-pref-alg", "srl_nokia-features:evpn-mh-single-active", "srl_nokia-features:fixed", "srl_nokia-features:future-21-6", "srl_nokia-features:future-21-6-2", "srl_nokia-features:future-21-6-3", "srl_nokia-features:lacp-fallback", "srl_nokia-features:lag", "srl_nokia-features:mirroring", "srl_nokia-features:platform-7220-d3", "srl_nokia-features:port-breakout", "srl_nokia-features:ra-guard", "srl_nokia-features:reload-delay", "srl_nokia-features:storm-control", "srl_nokia-features:trident3", "srl_nokia-features:vxlan", "srl_nokia-features:warm-reboot"],
-      "checksum": "827e66018da80d39$470f586c29aabf3da3a158487a281657f83c275d"
+      "checksum": "e01d086d2a2e8c7a$2cb95307e50604acff1fc073d0548f221e0f9410"
     },
     "build": {
       "git-branch": "SRL_21_6_B1",
@@ -1951,22 +1951,23 @@
       "srl_nokia-interfaces-vlans:vlan-tagging": true,
       "subinterface": [
         {
-          "index": 3,
+          "index": 1001,
+          "type": "srl_nokia-interfaces:bridged",
           "srl_nokia-interfaces-vlans:vlan": {
             "encap": {
               "single-tagged": {
-                "vlan-id": 3
+                "vlan-id": 1001
               }
             }
           }
         },
         {
-          "index": 4,
+          "index": 1002,
           "type": "srl_nokia-interfaces:bridged",
           "srl_nokia-interfaces-vlans:vlan": {
             "encap": {
               "single-tagged": {
-                "vlan-id": 4
+                "vlan-id": 1002
               }
             }
           }
@@ -2016,38 +2017,25 @@
       "admin-state": "enable",
       "subinterface": [
         {
-          "index": 0,
+          "index": 1001,
           "admin-state": "enable",
           "ipv4": {
             "address": [
               {
                 "ip-prefix": "10.6.4.254/24"
-              },
+              }
+            ]
+          }
+        },
+        {
+          "index": 1002,
+          "admin-state": "enable",
+          "ipv4": {
+            "address": [
               {
-                "ip-prefix": "192.168.201.1/24",
-                "anycast-gw": true
+                "ip-prefix": "10.106.4.254/24"
               }
-            ],
-            "srl_nokia-interfaces-nbr:arp": {
-              "learn-unsolicited": true,
-              "host-route": {
-                "populate": [
-                  {
-                    "route-type": "dynamic"
-                  }
-                ]
-              },
-              "srl_nokia-interfaces-nbr-evpn:evpn": {
-                "advertise": [
-                  {
-                    "route-type": "dynamic"
-                  }
-                ]
-              }
-            }
-          },
-          "anycast-gw": {
-            
+            ]
           }
         }
       ]
@@ -2327,10 +2315,22 @@
       "type": "srl_nokia-network-instance:mac-vrf",
       "interface": [
         {
-          "name": "ethernet-1/20.4"
+          "name": "ethernet-1/20.1001"
         },
         {
-          "name": "irb1.0"
+          "name": "irb1.1001"
+        }
+      ]
+    },
+    {
+      "name": "1002-macvrf",
+      "type": "srl_nokia-network-instance:mac-vrf",
+      "interface": [
+        {
+          "name": "ethernet-1/20.1002"
+        },
+        {
+          "name": "irb1.1002"
         }
       ]
     },
@@ -2429,7 +2429,10 @@
           "name": "irb0.0"
         },
         {
-          "name": "irb1.0"
+          "name": "irb1.1001"
+        },
+        {
+          "name": "irb1.1002"
         },
         {
           "name": "lo1.0"
@@ -2464,9 +2467,6 @@
               "import-policy": "import-all",
               "timers": {
                 "minimum-advertisement-interval": 1
-              },
-              "transport": {
-                "local-address": "10.6.4.254"
               }
             },
             {
@@ -2510,8 +2510,19 @@
             },
             {
               "peer-address": "10.6.4.1",
-              "peer-as": 64500,
-              "peer-group": "CE-Router"
+              "peer-as": 65001,
+              "peer-group": "CE-Router",
+              "transport": {
+                "local-address": "10.6.4.254"
+              }
+            },
+            {
+              "peer-address": "10.106.4.1",
+              "peer-as": 65002,
+              "peer-group": "CE-Router",
+              "transport": {
+                "local-address": "10.106.4.254"
+              }
             }
           ]
         },
@@ -2595,10 +2606,6 @@
       {
         "name": "dcgw-ce",
         "prefix": [
-          {
-            "ip-prefix": "10.6.4.0/24",
-            "mask-length-range": "24..32"
-          },
           {
             "ip-prefix": "10.254.254.240/28",
             "mask-length-range": "28..32"

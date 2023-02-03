@@ -3,9 +3,9 @@
 # Built on Wed Jun 22 14:38:17 PDT 2022 by builder in /builds/c/225B/R2/panos/main/sros
 # Configuration format version 22.5 revision 0
 
-# Generated 2023-02-02T22:51:04.9Z by admin from 172.31.255.29
-# Commit ID 7
-#   Committed 2023-02-02T22:51:01.3Z by admin (MD-CLI) from 172.31.255.29
+# Generated 2023-02-03T21:57:38.9Z by admin from 172.31.255.29
+# Commit ID 9
+#   Committed 2023-02-03T21:57:33.8Z by admin (MD-CLI) from 172.31.255.29
 
 configure {
     apply-groups ["baseport"]
@@ -368,14 +368,12 @@ configure {
         community "vrf100201-import" {
             member "target:64500:100201" { }
         }
-        prefix-list "vrf1001-prefixes" {
-            prefix 10.6.4.0/24 type exact {
-            }
+        prefix-list "dc-expose-prefixes" {
             prefix 10.254.254.240/28 type exact {
             }
         }
-        prefix-list "vrf1001-prefixes-ipv6" {
-            prefix 2001:db8:6:400::/56 type exact {
+        prefix-list "vrf1001-prefixes" {
+            prefix 10.6.4.0/24 type exact {
             }
         }
         prefix-list "vrf1002-prefixes" {
@@ -398,23 +396,7 @@ configure {
         policy-statement "vrf1001-ebgp-export" {
             entry 10 {
                 from {
-                    prefix-list ["vrf1001-prefixes"]
-                }
-                to {
-                    protocol {
-                        name [bgp]
-                    }
-                }
-                action {
-                    action-type accept
-                    origin igp
-                }
-            }
-        }
-        policy-statement "vrf1001-ebgp-export-ipv6" {
-            entry 10 {
-                from {
-                    prefix-list ["vrf1001-prefixes-ipv6"]
+                    prefix-list ["vrf1001-prefixes" "dc-expose-prefixes"]
                 }
                 to {
                     protocol {
@@ -465,7 +447,7 @@ configure {
         policy-statement "vrf1002-ebgp-export" {
             entry 10 {
                 from {
-                    prefix-list ["vrf1002-prefixes"]
+                    prefix-list ["vrf1002-prefixes" "dc-expose-prefixes"]
                 }
                 to {
                     protocol {
@@ -950,7 +932,7 @@ configure {
                 group "ebgp" {
                     admin-state enable
                     as-override true
-                    peer-as 64514
+                    peer-as 65001
                     split-horizon true
                     send-communities {
                         extended false
@@ -965,15 +947,6 @@ configure {
                         policy ["vrf4-ebgp-export"]
                     }
                 }
-                neighbor "2001:db8:3001:704::2" {
-                    group "ebgp"
-                    family {
-                        ipv6 true
-                    }
-                    export {
-                        policy ["vrf4-ebgp-export"]
-                    }
-                }
             }
             interface "PE-to-CE" {
                 admin-state enable
@@ -983,7 +956,7 @@ configure {
                         prefix-length 30
                     }
                 }
-                sap pxc-3.a:4 {
+                sap pxc-3.a:1001 {
                 }
                 ipv6 {
                     address 2001:db8:3001:704::1 {
@@ -1043,7 +1016,7 @@ configure {
                 group "ebgp" {
                     admin-state enable
                     as-override true
-                    peer-as 64514
+                    peer-as 65002
                     split-horizon true
                     send-communities {
                         extended false
@@ -1067,7 +1040,7 @@ configure {
                         prefix-length 30
                     }
                 }
-                sap pxc-3.a:3 {
+                sap pxc-3.a:1002 {
                 }
             }
         }
@@ -1075,7 +1048,7 @@ configure {
             admin-state enable
             service-id 10012023
             customer "1001"
-            autonomous-system 64514
+            autonomous-system 65001
             bgp {
                 admin-state enable
                 min-route-advertisement 1
@@ -1089,7 +1062,7 @@ configure {
                     peer-as 65310
                     local-address 10.6.4.1
                     local-as {
-                        as-number 64500
+                        as-number 65001
                     }
                     import {
                         policy ["accept-all"]
@@ -1118,15 +1091,6 @@ configure {
                         policy ["vrf1001-ebgp-export"]
                     }
                 }
-                neighbor "2001:db8:3001:604::1" {
-                    group "EBGP"
-                    family {
-                        ipv6 true
-                    }
-                    export {
-                        policy ["vrf1001-ebgp-export-ipv6"]
-                    }
-                }
             }
             interface "CE-to-PE" {
                 admin-state enable
@@ -1136,7 +1100,7 @@ configure {
                         prefix-length 30
                     }
                 }
-                sap pxc-3.b:4 {
+                sap pxc-3.b:1001 {
                 }
                 ipv6 {
                     address 2001:db8:3001:604::2 {
@@ -1152,7 +1116,7 @@ configure {
                         prefix-length 24
                     }
                 }
-                sap 1/1/c3/1:4 {
+                sap 1/1/c3/1:1001 {
                 }
                 ipv6 {
                     address 2001:db8:6:400::1 {
@@ -1165,7 +1129,7 @@ configure {
             admin-state enable
             service-id 10022023
             customer "1002"
-            autonomous-system 64514
+            autonomous-system 65002
             bgp {
                 admin-state enable
                 min-route-advertisement 1
@@ -1174,10 +1138,27 @@ configure {
                     import false
                     export false
                 }
+                group "DCGW" {
+                    admin-state enable
+                    peer-as 65310
+                    local-address 10.106.4.1
+                    import {
+                        policy ["accept-all"]
+                    }
+                    export {
+                        policy ["accept-all"]
+                    }
+                }
                 group "EBGP" {
                     admin-state enable
                     peer-as 64500
                     split-horizon true
+                }
+                neighbor "10.106.4.254" {
+                    group "DCGW"
+                    family {
+                        ipv4 true
+                    }
                 }
                 neighbor "192.168.4.5" {
                     group "EBGP"
@@ -1197,7 +1178,7 @@ configure {
                         prefix-length 30
                     }
                 }
-                sap pxc-3.b:3 {
+                sap pxc-3.b:1002 {
                 }
             }
             interface "LAN" {
@@ -1208,7 +1189,7 @@ configure {
                         prefix-length 24
                     }
                 }
-                sap 1/1/c3/1:3 {
+                sap 1/1/c3/1:1002 {
                 }
             }
         }
@@ -1626,4 +1607,4 @@ persistent-indices {
     }
 }
 
-# Finished 2023-02-02T22:51:05.0Z
+# Finished 2023-02-03T21:57:39.0Z

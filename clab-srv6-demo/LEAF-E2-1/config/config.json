@@ -4,10 +4,10 @@
       "generated-by": "SRLINUX",
       "name": "",
       "comment": "",
-      "created": "2023-02-01T16:52:56.023Z",
+      "created": "2023-02-03T23:14:13.342Z",
       "release": "v21.6.4",
       "enabled-yang-features": ["srl_nokia-features:anycast-gw", "srl_nokia-features:bridged", "srl_nokia-features:evpn", "srl_nokia-features:evpn-advertise-arp-nd-only-with-mac-table-entry", "srl_nokia-features:evpn-mh-pref-alg", "srl_nokia-features:evpn-mh-single-active", "srl_nokia-features:fixed", "srl_nokia-features:future-21-6", "srl_nokia-features:future-21-6-2", "srl_nokia-features:future-21-6-3", "srl_nokia-features:lacp-fallback", "srl_nokia-features:lag", "srl_nokia-features:mirroring", "srl_nokia-features:platform-7220-d3", "srl_nokia-features:port-breakout", "srl_nokia-features:ra-guard", "srl_nokia-features:reload-delay", "srl_nokia-features:storm-control", "srl_nokia-features:trident3", "srl_nokia-features:vxlan", "srl_nokia-features:warm-reboot"],
-      "checksum": "0092473ed42365fa$eb60214917f91e9dd3e6eed367009e47771410e9"
+      "checksum": "e786102b712c8f67$cf55fd45cd80e4977ceb44b4f6c28ea19ba8eb50"
     },
     "build": {
       "git-branch": "SRL_21_6_B1",
@@ -1891,10 +1891,40 @@
     {
       "name": "ethernet-1/10",
       "admin-state": "enable",
+      "srl_nokia-interfaces-vlans:vlan-tagging": true,
       "subinterface": [
         {
           "index": 0,
-          "type": "srl_nokia-interfaces:bridged"
+          "type": "srl_nokia-interfaces:bridged",
+          "srl_nokia-interfaces-vlans:vlan": {
+            "encap": {
+              "untagged": {
+                
+              }
+            }
+          }
+        },
+        {
+          "index": 251,
+          "type": "srl_nokia-interfaces:bridged",
+          "srl_nokia-interfaces-vlans:vlan": {
+            "encap": {
+              "single-tagged": {
+                "vlan-id": 251
+              }
+            }
+          }
+        },
+        {
+          "index": 252,
+          "type": "srl_nokia-interfaces:bridged",
+          "srl_nokia-interfaces-vlans:vlan": {
+            "encap": {
+              "single-tagged": {
+                "vlan-id": 252
+              }
+            }
+          }
         }
       ]
     },
@@ -1921,6 +1951,28 @@
             "encap": {
               "single-tagged": {
                 "vlan-id": 4
+              }
+            }
+          }
+        },
+        {
+          "index": 1001,
+          "type": "srl_nokia-interfaces:bridged",
+          "srl_nokia-interfaces-vlans:vlan": {
+            "encap": {
+              "single-tagged": {
+                "vlan-id": 1001
+              }
+            }
+          }
+        },
+        {
+          "index": 1002,
+          "type": "srl_nokia-interfaces:bridged",
+          "srl_nokia-interfaces-vlans:vlan": {
+            "encap": {
+              "single-tagged": {
+                "vlan-id": 1002
               }
             }
           }
@@ -2171,6 +2223,30 @@
     }
   },
   "srl_nokia-network-instance:network-instance": [
+    {
+      "name": "1001-macvrf",
+      "type": "srl_nokia-network-instance:mac-vrf",
+      "interface": [
+        {
+          "name": "ethernet-1/10.251"
+        },
+        {
+          "name": "ethernet-1/20.1001"
+        }
+      ]
+    },
+    {
+      "name": "1002-macvrf",
+      "type": "srl_nokia-network-instance:mac-vrf",
+      "interface": [
+        {
+          "name": "ethernet-1/10.252"
+        },
+        {
+          "name": "ethernet-1/20.1002"
+        }
+      ]
+    },
     {
       "name": "edge2-macvrf",
       "type": "srl_nokia-network-instance:mac-vrf",
