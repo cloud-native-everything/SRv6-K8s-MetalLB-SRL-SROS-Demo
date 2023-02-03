@@ -4,10 +4,10 @@
       "generated-by": "SRLINUX",
       "name": "",
       "comment": "",
-      "created": "2023-01-30T21:39:07.614Z",
+      "created": "2023-02-02T22:57:41.230Z",
       "release": "v21.6.4",
       "enabled-yang-features": ["srl_nokia-features:anycast-gw", "srl_nokia-features:bridged", "srl_nokia-features:evpn", "srl_nokia-features:evpn-advertise-arp-nd-only-with-mac-table-entry", "srl_nokia-features:evpn-mh-pref-alg", "srl_nokia-features:evpn-mh-single-active", "srl_nokia-features:fixed", "srl_nokia-features:future-21-6", "srl_nokia-features:future-21-6-2", "srl_nokia-features:future-21-6-3", "srl_nokia-features:lacp-fallback", "srl_nokia-features:lag", "srl_nokia-features:mirroring", "srl_nokia-features:platform-7220-d3", "srl_nokia-features:port-breakout", "srl_nokia-features:ra-guard", "srl_nokia-features:reload-delay", "srl_nokia-features:storm-control", "srl_nokia-features:trident3", "srl_nokia-features:vxlan", "srl_nokia-features:warm-reboot"],
-      "checksum": "ed946f63553082ee$5b662889faba16b54e9acaadaad9281b7a8ea7fb"
+      "checksum": "827e66018da80d39$470f586c29aabf3da3a158487a281657f83c275d"
     },
     "build": {
       "git-branch": "SRL_21_6_B1",
@@ -1947,6 +1947,33 @@
       ]
     },
     {
+      "name": "ethernet-1/20",
+      "srl_nokia-interfaces-vlans:vlan-tagging": true,
+      "subinterface": [
+        {
+          "index": 3,
+          "srl_nokia-interfaces-vlans:vlan": {
+            "encap": {
+              "single-tagged": {
+                "vlan-id": 3
+              }
+            }
+          }
+        },
+        {
+          "index": 4,
+          "type": "srl_nokia-interfaces:bridged",
+          "srl_nokia-interfaces-vlans:vlan": {
+            "encap": {
+              "single-tagged": {
+                "vlan-id": 4
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "irb0",
       "admin-state": "enable",
       "subinterface": [
@@ -1993,6 +2020,9 @@
           "admin-state": "enable",
           "ipv4": {
             "address": [
+              {
+                "ip-prefix": "10.6.4.254/24"
+              },
               {
                 "ip-prefix": "192.168.201.1/24",
                 "anycast-gw": true
@@ -2293,6 +2323,18 @@
   },
   "srl_nokia-network-instance:network-instance": [
     {
+      "name": "1001-macvrf",
+      "type": "srl_nokia-network-instance:mac-vrf",
+      "interface": [
+        {
+          "name": "ethernet-1/20.4"
+        },
+        {
+          "name": "irb1.0"
+        }
+      ]
+    },
+    {
       "name": "default",
       "interface": [
         {
@@ -2416,6 +2458,23 @@
           "router-id": "1.1.1.210",
           "group": [
             {
+              "group-name": "CE-Router",
+              "admin-state": "enable",
+              "export-policy": "export-dcgw-to-ce",
+              "import-policy": "import-all",
+              "timers": {
+                "minimum-advertisement-interval": 1
+              },
+              "transport": {
+                "local-address": "10.6.4.254"
+              }
+            },
+            {
+              "group-name": "PE",
+              "export-policy": "export-all",
+              "import-policy": "import-all"
+            },
+            {
               "group-name": "k8s-leaf-bgp",
               "admin-state": "enable",
               "timers": {
@@ -2448,6 +2507,11 @@
               "peer-address": "1.1.1.202",
               "peer-as": 65302,
               "peer-group": "k8s-leaf-bgp"
+            },
+            {
+              "peer-address": "10.6.4.1",
+              "peer-as": 64500,
+              "peer-group": "CE-Router"
             }
           ]
         },
@@ -2461,6 +2525,9 @@
               }
             }
           ]
+        },
+        "srl_nokia-isis:isis": {
+          
         }
       }
     },
@@ -2505,46 +2572,6 @@
       }
     },
     {
-      "name": "kube_macvrf2",
-      "type": "srl_nokia-network-instance:mac-vrf",
-      "interface": [
-        {
-          "name": "ethernet-1/12.0"
-        },
-        {
-          "name": "irb1.0"
-        }
-      ],
-      "vxlan-interface": [
-        {
-          "name": "vxlan1.2"
-        }
-      ],
-      "protocols": {
-        "bgp-evpn": {
-          "srl_nokia-bgp-evpn:bgp-instance": [
-            {
-              "id": 1,
-              "admin-state": "enable",
-              "vxlan-interface": "vxlan1.2",
-              "evi": 2
-            }
-          ]
-        },
-        "srl_nokia-bgp-vpn:bgp-vpn": {
-          "bgp-instance": [
-            {
-              "id": 1,
-              "route-target": {
-                "export-rt": "target:65123:2",
-                "import-rt": "target:65123:2"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "name": "mgmt",
       "type": "srl_nokia-network-instance:ip-vrf",
       "admin-state": "enable",
@@ -2565,6 +2592,19 @@
   ],
   "srl_nokia-routing-policy:routing-policy": {
     "prefix-set": [
+      {
+        "name": "dcgw-ce",
+        "prefix": [
+          {
+            "ip-prefix": "10.6.4.0/24",
+            "mask-length-range": "24..32"
+          },
+          {
+            "ip-prefix": "10.254.254.240/28",
+            "mask-length-range": "28..32"
+          }
+        ]
+      },
       {
         "name": "metallb-pool",
         "prefix": [
@@ -2638,6 +2678,30 @@
             
           }
         }
+      },
+      {
+        "name": "export-dcgw-to-ce",
+        "statement": [
+          {
+            "sequence-id": 10,
+            "match": {
+              "prefix-set": "dcgw-ce"
+            },
+            "action": {
+              "accept": {
+                
+              }
+            }
+          },
+          {
+            "sequence-id": 20,
+            "action": {
+              "reject": {
+                
+              }
+            }
+          }
+        ]
       },
       {
         "name": "import-all",

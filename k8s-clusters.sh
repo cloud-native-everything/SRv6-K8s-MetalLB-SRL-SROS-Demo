@@ -14,8 +14,8 @@ MULTUS_DAEMONSET_URL="${MULTUS_DEPLOYMENT_URL}/${MULTUS_FLAVOUR}.yml"
 CERT_MANAGER_URL="https://github.com/jetstack/cert-manager/releases/download/v1.6.2/cert-manager.yaml"
 CHART_NAME=metallb
 
-SIDELOAD_IMAGES_SRC=(alpine:latest busybox:latest python:latest quay.io/metallb/speaker:v0.12.1 quay.io/metallb/controller:v0.12.1)
-SIDELOAD_IMAGES=(alpine:latest busybox:latest python:latest  quay.io/metallb/speaker:v0.12.1 quay.io/metallb/controller:v0.12.1)
+SIDELOAD_IMAGES_SRC=(alpine:latest busybox:latest python:latest quay.io/metallb/speaker:v0.12.1 quay.io/metallb/controller:v0.12.1 rogerw/cassowary:v0.14.1 pinrojas/net-test:0.31)
+SIDELOAD_IMAGES=(alpine:latest busybox:latest python:latest  quay.io/metallb/speaker:v0.12.1 quay.io/metallb/controller:v0.12.1 rogerw/cassowary:v0.14.1 pinrojas/net-test:0.31)
 
 
 for f in "${HERE}/lib/"*.sh; do
@@ -58,7 +58,7 @@ sideload_cp() {
 sideload_docker_images() {
     pull_docker_images
     
-    for node in $(get_workers); do
+    for node in $(get_k8s_nodes); do
         sideload_worker "$node" &
     done
     sideload_cp &
@@ -162,13 +162,8 @@ docker_net_config () {
     local netwk="${4}"
     local VLANS=(251 252)
     echo Setting "$node and interface ${itf} to ${netwk}.${octect}/24"
-#    docker exec -i "$node" bash -c "ip link set ${itf} down; ip link set ${itf} up mtu 9500; ip addr add ${netwk}.${octect}/24 dev ${itf}; ip link set ${itf} up;"
-#    sleep 2
-#    echo docker exec -i "$node" bash -c "ip route del default; ip route add default via ${netwk}.1"
-#    docker exec -i "$node" bash -c "ip route del default; ip route add default via ${netwk}.1"
-    docker exec -i "$node" bash -c "ip link add ${bond} type bond; ip link set ${itf} down; ip link set ${itf} master ${bond}; ip link set ${bond} up mtu 9500; ip addr add ${netwk}.${octect}/24 dev ${bond}"
+    docker exec -i "$node" bash -c "ip link add ${bond} type bond; ip link set ${itf} down; ip link set ${itf} master ${bond}; ip link set ${bond} up mtu 9500; ip addr add ${netwk}.${octect}/24 dev ${bond}; ip route del default; ip route add default via ${netwk}.1"
     sleep 2
-
     for vlan in "${VLANS[@]}"
     do
         echo "Setting up ${vlan} at ${bond} in ${node}"
