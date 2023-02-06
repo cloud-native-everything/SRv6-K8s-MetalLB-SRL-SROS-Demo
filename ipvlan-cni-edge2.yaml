@@ -11,23 +11,18 @@ spec:
     "type": "ipvlan",
     "master": "VLAN-251",
     "ipam": {
-      "type": "host-local",
-      "ranges": [
-          [ 
-            { 
-              "subnet": "10.7.4.0/24",
-	      "rangeStart": "10.7.4.20",
-    	      "rangeEnd": "10.7.4.50",
-	      "gateway": "10.7.4.1"              
-            }
-          ]
-        ],
-        "routes": [ 
+      "type": "static",
+      "addresses": [
           { 
-            "dst": "0.0.0.0/0", 
-            "gw": "10.7.4.1" 
-          } 
-        ]
+	      "address": "10.7.4.20/24"              
+          }
+        ],
+      "routes": [ 
+        { 
+          "dst": "0.0.0.0/0", 
+          "gw": "10.7.4.1" 
+        } 
+      ]
     }
   }]
 }'
@@ -44,23 +39,18 @@ spec:
     "type": "ipvlan",
     "master": "VLAN-252",
     "ipam": {
-      "type": "host-local",
-      "ranges": [
-          [ 
-            { 
-              "subnet": "10.7.10.0/24",
-	    "rangeStart": "10.7.10.20",
-	    "rangeEnd": "10.7.10.50",
-	    "gateway": "10.7.10.1"              
-            }
-          ]
+      "type": "static",
+      "addresses": [
+          {
+              "address": "10.7.10.20/24"
+          }
         ],
-        "routes": [ 
-          { 
-            "dst": "0.0.0.0/0", 
-            "gw": "10.7.10.1" 
-          } 
-        ]
+      "routes": [
+        {
+          "dst": "0.0.0.0/0",
+          "gw": "10.7.10.1"
+        }
+      ]      
     }
   }]
 }'
