@@ -5,17 +5,20 @@ export HERE=$(dirname $(readlink -f "$0"))
 [ ! -z "${DEBUG+x}" ] && set -x
 
 start_all() {
-    clab deploy --topo topo.yml
     ./k8s-clusters.sh -s
+    clab deploy --topo topo.yml
     ./k8s-clusters.sh -l
     ./k8s-clusters.sh -x
-    kubectl apply -f metallb/metallb-namespace.yaml --context kind-datacenter
-    kubectl apply -f metallb/metallb-manifest.yaml --context kind-datacenter
-    kubectl apply -f metallb/metallb-bgp-setup.yaml --context kind-datacenter
-    kubectl apply -f hello-app-python-datacenter.yaml --context kind-datacenter
-    kubectl apply -f hello-app-lb-datacenter.yaml --context kind-datacenter
-    kubectl apply -f ipvlan-cni-edge1.yaml --context kind-edge1
-    kubectl apply -f ipvlan-pods-edge1.yaml --context kind-edge1
+    kubectl apply -f ${HERE}/metallb/metallb-namespace.yaml --context kind-datacenter
+    kubectl apply -f ${HERE}/metallb/metallb-manifest.yaml --context kind-datacenter
+    kubectl apply -f ${HERE}/metallb/metallb-bgp-setup.yaml --context kind-datacenter
+    kubectl apply -f ${HERE}/app/hello-app-python-datacenter.yaml --context kind-datacenter
+    kubectl apply -f ${HERE}/app/hello-app-lb-datacenter.yaml --context kind-datacenter
+    kubectl apply -f ${HERE}/app/ipvlan-cni-edge1.yaml --context kind-edge1
+    kubectl apply -f ${HERE}/app/ipvlan-pods-edge1.yaml --context kind-edge1
+    kubectl apply -f ${HERE}/app/ipvlan-cni-edge2.yaml --context kind-edge2
+    kubectl apply -f ${HERE}/app/ipvlan-pods-edge2.yaml --context kind-edge2
+    kubectl apply -f ${HERE}/app/prom.yaml --context kind-edge1
 }
 
 clean_all() {

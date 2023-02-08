@@ -14,8 +14,8 @@ MULTUS_DAEMONSET_URL="${MULTUS_DEPLOYMENT_URL}/${MULTUS_FLAVOUR}.yml"
 CERT_MANAGER_URL="https://github.com/jetstack/cert-manager/releases/download/v1.6.2/cert-manager.yaml"
 CHART_NAME=metallb
 
-SIDELOAD_IMAGES_SRC=(alpine:latest busybox:latest python:latest quay.io/metallb/speaker:v0.12.1 quay.io/metallb/controller:v0.12.1 rogerw/cassowary:v0.14.1 pinrojas/net-test:0.31)
-SIDELOAD_IMAGES=(alpine:latest busybox:latest python:latest  quay.io/metallb/speaker:v0.12.1 quay.io/metallb/controller:v0.12.1 rogerw/cassowary:v0.14.1 pinrojas/net-test:0.31)
+SIDELOAD_IMAGES_SRC=(alpine:latest busybox:latest python:latest quay.io/metallb/speaker:v0.12.1 quay.io/metallb/controller:v0.12.1 rogerw/cassowary:v0.14.1 pinrojas/cassowary:0.33 prom/pushgateway:latest)
+SIDELOAD_IMAGES=(alpine:latest busybox:latest python:latest  quay.io/metallb/speaker:v0.12.1 quay.io/metallb/controller:v0.12.1 rogerw/cassowary:v0.14.1 pinrojas/cassowary:0.33 prom/pushgateway:latest)
 
 
 for f in "${HERE}/lib/"*.sh; do

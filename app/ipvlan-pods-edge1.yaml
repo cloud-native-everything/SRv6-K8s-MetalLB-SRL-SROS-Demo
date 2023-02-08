@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: ipvlan-1001-alpine
-          image: pinrojas/net-test:0.31
+          image: pinrojas/cassowary:0.33
           imagePullPolicy: Never
           command: ["sleep"]
           args: ["10000000"]
@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
         - name: ipvlan-1002-alpine
-          image: pinrojas/net-test:0.31
+          image: pinrojas/cassowary:0.33
           imagePullPolicy: Never
           command: ["sleep"]
           args: ["10000000"]

@@ -11,6 +11,10 @@ Conditions:
 * Delay Metrics: All delay metrics are 10msec with the exception of the R3-R5 link, which is 15msec.
 * We have created two different customer. Conditions of latency is only apply to one of them
 
+```
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' edge1-control-plane
+until false; do cassowary run -u http://10.254.254.240:8080 -c 4 -n 4 -p pushgateway:9091; done
+```
 
 ## Network Setup
 

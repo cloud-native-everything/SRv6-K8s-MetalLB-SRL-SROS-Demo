@@ -5,8 +5,8 @@ name: srv6-demo
 # common SR chassis type: SR-1s
 
 mgmt:
-  network: net3         # management network name
-  ipv4_subnet: 172.100.20.0/24       # ipv4 range
+  network: kind        # management network name
+  ipv4_subnet: 172.18.100.0/16       # ipv4 range
 
 # based on SROS 21.10R2
 topology:
@@ -27,49 +27,49 @@ topology:
 # main 6 nodes
     R1:      
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.9
+      mgmt_ipv4: 172.18.100.9
       config:
         vars:
           clab_system_ip: 192.0.2.1/32
           ipv4_sid_label: 14001
     R2:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.2
+      mgmt_ipv4: 172.18.100.2
       config:
         vars:
           clab_system_ip: 192.0.2.2/32
           ipv4_sid_label: 14002
     R3:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.3
+      mgmt_ipv4: 172.18.100.3
       config:
         vars:
           clab_system_ip: 192.0.2.3/32
           ipv4_sid_label: 14003
     R4:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.4
+      mgmt_ipv4: 172.18.100.4
       config:
         vars:
           clab_system_ip: 192.0.2.4/32
           ipv4_sid_label: 14004
     R5:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.5
+      mgmt_ipv4: 172.18.100.5
       config:
         vars:
           clab_system_ip: 192.0.2.5/32
           ipv4_sid_label: 14005
     R6:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.6
+      mgmt_ipv4: 172.18.100.6
       config:
         vars:
           clab_system_ip: 192.0.2.6/32
           ipv4_sid_label: 14006
     R7:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.7
+      mgmt_ipv4: 172.18.100.7
       config:
         vars:
           clab_system_ip: 192.0.2.7/32
@@ -77,14 +77,14 @@ topology:
 # area 1 - Core
     R11:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.11
+      mgmt_ipv4: 172.18.100.11
       config:
         vars:
           clab_system_ip: 192.0.2.11/32
           ipv4_sid_label: 14011
     R12:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.12
+      mgmt_ipv4: 172.18.100.12
       config:
         vars:
           clab_system_ip: 192.0.2.12/32
@@ -92,14 +92,14 @@ topology:
 # area 2
     R21:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.21
+      mgmt_ipv4: 172.18.100.21
       config:
         vars:
           clab_system_ip: 192.0.2.21/32
           ipv4_sid_label: 14021
     R22:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.22
+      mgmt_ipv4: 172.18.100.22
       config:
         vars:
           clab_system_ip: 192.0.2.12/32
@@ -108,14 +108,14 @@ topology:
 # area 3
     R31:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.31
+      mgmt_ipv4: 172.18.100.31
       config:
         vars:
           clab_system_ip: 192.0.2.31/32
           ipv4_sid_label: 14031
     R32:
       kind: vr-sros
-      mgmt_ipv4: 172.100.20.32
+      mgmt_ipv4: 172.18.100.32
       config:
         vars:
           clab_system_ip: 192.0.2.32/32
@@ -124,38 +124,50 @@ topology:
 # DC Network nodes
     LEAF-DC-1:
       kind: srl
-      mgmt_ipv4: 172.100.20.121 
+      mgmt_ipv4: 172.18.100.121 
     LEAF-DC-2:
       kind: srl
-      mgmt_ipv4: 172.100.20.122         
+      mgmt_ipv4: 172.18.100.122         
     SPINE-DC-1:
       kind: srl
-      mgmt_ipv4: 172.100.20.123 
+      mgmt_ipv4: 172.18.100.123 
     SPINE-DC-2:
       kind: srl
-      mgmt_ipv4: 172.100.20.124 
+      mgmt_ipv4: 172.18.100.124 
     BORDER-DC:
       kind: srl
-      mgmt_ipv4: 172.100.20.125 
+      mgmt_ipv4: 172.18.100.125 
 
 # Edge 1 Network nodes
     LEAF-E1-1:
       kind: srl
-      mgmt_ipv4: 172.100.20.131 
+      mgmt_ipv4: 172.18.100.131 
 
 # Edge 2 Network nodes
     LEAF-E2-1:
       kind: srl
-      mgmt_ipv4: 172.100.20.141 
+      mgmt_ipv4: 172.18.100.141 
 
 # Nodes for testing
-    pushgateway:
+    prometheus:
       kind: linux
-      image: prom/pushgateway:latest
-      mgmt_ipv4: 172.100.20.115
+      image: prom/prometheus:latest
+      mgmt_ipv4: 172.18.100.115
+      binds: 
+        - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro        
       user: 65534:65534
       ports:
-        - 9091:9092
+        - 9091:9090
+
+# Grafana Dashboard
+    grafana:
+      kind: linux
+      image: grafana/grafana:latest
+      mgmt_ipv4: 172.18.100.116
+#      binds:
+#        - ./grafana/datasources/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+      ports:
+        - 3000:3000
 
 # bridge to VSR-NRC
   
