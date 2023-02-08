@@ -1,6 +1,6 @@
 global:
-  scrape_interval:     15s 
-  evaluation_interval: 15s 
+  scrape_interval:     10s 
+  evaluation_interval: 10s 
 
 alerting:
   alertmanagers:
@@ -15,11 +15,13 @@ rule_files:
 # Here it's Prometheus itself.
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: 'prometheus'
-    static_configs:
-    - targets: ['localhost:9090']
-  - job_name: 'pushgateway'
+  - job_name: 'push-c1-e1-to-dc'
     honor_labels: false
     metrics_path: /metrics
     static_configs:
-      - targets: ['172.18.0.5:30007','localhost:9091']            
+      - targets: ['172.18.0.5:30001']
+  - job_name: 'push-c2-e1-to-dc'
+    honor_labels: false
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['172.18.0.5:30002']      

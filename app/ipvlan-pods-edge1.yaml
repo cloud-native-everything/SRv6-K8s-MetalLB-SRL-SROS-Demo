@@ -6,7 +6,7 @@ spec:
   selector:
     matchLabels:
       app: ipvlan-1001-alpine
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -18,8 +18,11 @@ spec:
         - name: ipvlan-1001-alpine
           image: pinrojas/cassowary:0.33
           imagePullPolicy: Never
-          command: ["sleep"]
-          args: ["10000000"]
+          command:
+          - /bin/sh
+          - -c
+          - |
+            until false; do cassowary run -u http://10.254.254.240:8080 -c 4 -n 4 -p pushsvc-cust1-to-dc:9091; sleep 2; done
           env:
           - name: K8S_NODE_NAME
             valueFrom:
@@ -34,7 +37,7 @@ spec:
   selector:
     matchLabels:
       app: ipvlan-1002-alpine
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -46,8 +49,11 @@ spec:
         - name: ipvlan-1002-alpine
           image: pinrojas/cassowary:0.33
           imagePullPolicy: Never
-          command: ["sleep"]
-          args: ["10000000"]
+          command:
+          - /bin/sh
+          - -c
+          - |
+            until false; do cassowary run -u http://10.254.254.240:8080 -c 4 -n 4 -p pushsvc-cust2-to-dc:9091; sleep 2; done
           env:
           - name: K8S_NODE_NAME
             valueFrom:

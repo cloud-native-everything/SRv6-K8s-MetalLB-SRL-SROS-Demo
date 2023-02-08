@@ -164,8 +164,9 @@ topology:
       kind: linux
       image: grafana/grafana:latest
       mgmt_ipv4: 172.18.100.116
-#      binds:
-#        - ./grafana/datasources/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+      binds:
+        - ./grafana/datasources/datasource.yaml:/etc/grafana/provisioning/datasources/datasource.yaml:ro
+        - ./grafana/dashboard:/etc/grafana/provisioning/dashboard:ro
       ports:
         - 3000:3000
 
