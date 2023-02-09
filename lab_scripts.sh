@@ -5,6 +5,7 @@ export HERE=$(dirname $(readlink -f "$0"))
 [ ! -z "${DEBUG+x}" ] && set -x
 
 start_all() {
+    docker network create kind --subnet=172.18.0.0/16	
     ./k8s-clusters.sh -s
     clab deploy --topo topo.yml
     ./k8s-clusters.sh -l
@@ -14,11 +15,11 @@ start_all() {
     kubectl apply -f ${HERE}/metallb/metallb-bgp-setup.yaml --context kind-datacenter
     kubectl apply -f ${HERE}/app/hello-app-python-datacenter.yaml --context kind-datacenter
     kubectl apply -f ${HERE}/app/hello-app-lb-datacenter.yaml --context kind-datacenter
+    kubectl apply -f ${HERE}/app/prom.yaml --context kind-edge1
     kubectl apply -f ${HERE}/app/ipvlan-cni-edge1.yaml --context kind-edge1
     kubectl apply -f ${HERE}/app/ipvlan-pods-edge1.yaml --context kind-edge1
     kubectl apply -f ${HERE}/app/ipvlan-cni-edge2.yaml --context kind-edge2
     kubectl apply -f ${HERE}/app/ipvlan-pods-edge2.yaml --context kind-edge2
-    kubectl apply -f ${HERE}/app/prom.yaml --context kind-edge1
 }
 
 clean_all() {
