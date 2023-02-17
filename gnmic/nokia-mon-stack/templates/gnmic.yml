@@ -11,18 +11,17 @@ data:
     encoding: json_ietf
     log: true
 
-    clustering:
-      cluster-name: cluster1
-      targets-watch-timer: 30s
-      locker:
-        type: consul
-        address: consul-svc:8500
-
     targets:
       172.18.100.2:57400:
         username: admin
         password: admin
+      172.18.100.3:57400:
+        username: admin
+        password: admin
       172.18.100.4:57400:
+        username: admin
+        password: admin
+      172.18.100.5:57400:
         username: admin
         password: admin
 
@@ -37,6 +36,13 @@ data:
       sros_port_stats_eth5:
         paths:
           - /state/port[port-id=1/1/c5/1]/statistics
+        mode: stream
+        stream-mode: sample
+        sample-interval: 5s
+
+      sros_last-reported-delay:
+        paths:
+          - /state/test-oam/link-measurement/router[router-instance=Base]/interface/last-reported-delay
         mode: stream
         stream-mode: sample
         sample-interval: 5s
@@ -124,7 +130,7 @@ spec:
             - --config
             - /app/config.yaml
           image: ghcr.io/karimra/gnmic
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Never
           name: gnmic
           securityContext:
             allowPrivilegeEscalation: false
@@ -154,14 +160,8 @@ spec:
           env:
             - name: GNMIC_API
               value: :7890
-            - name: GNMIC_CLUSTERING_INSTANCE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: metadata.name
-            - name: GNMIC_CLUSTERING_SERVICE_ADDRESS
-              value: "$(GNMIC_CLUSTERING_INSTANCE_NAME).gnmic-svc.gnmic.svc.cluster.local"
-            - name: GNMIC_OUTPUTS_OUTPUT1_LISTEN
-              value: "$(GNMIC_CLUSTERING_INSTANCE_NAME).gnmic-svc.gnmic.svc.cluster.local:9804"
+            - name: PROM_OUTPUT
+              value: :9804
           volumeMounts:
             - mountPath: /app/config.yaml
               name: config

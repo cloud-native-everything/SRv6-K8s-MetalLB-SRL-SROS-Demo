@@ -1,11 +1,14 @@
-# TiMOS-B-21.10.R2 both/x86_64 Nokia 7750 SR Copyright (c) 2000-2021 Nokia.
+# TiMOS-B-22.5.R2 both/x86_64 Nokia 7750 SR Copyright (c) 2000-2022 Nokia.
 # All rights reserved. All use subject to applicable license agreements.
-# Built on Wed Dec 15 14:15:11 PST 2021 by builder in /builds/c/2110B/R2/panos/main/sros
-# Configuration format version 21.10 revision 0
+# Built on Wed Jun 22 14:38:17 PDT 2022 by builder in /builds/c/225B/R2/panos/main/sros
+# Configuration format version 22.5 revision 0
 
-# Generated 2022-06-02T08:42:49.4Z by admin from 172.31.255.29
-# Commit ID 19
-# Committed 2022-05-30T13:44:57.3Z by admin (MD-CLI) from 172.31.255.29
+# Generated 2023-02-17T23:28:42.0Z by admin from 172.31.255.29
+# Commit ID 2
+#   Committed 2023-02-17T23:28:35.5Z by admin (MD-CLI) from 172.31.255.29
+# Commit ID 1
+#   Committed 2023-02-10T20:54:40.6Z by system (MD-CLI) from Console
+#   Log       "System booted version B-22.5.R2."
 
 configure {
     apply-groups ["baseport"]
@@ -501,7 +504,16 @@ configure {
             if-attribute {
                 admin-group ["South"]
                 delay {
+                    delay-selection dynamic-preferred
                     static 15000
+                    dynamic {
+                        measurement-template "direct-link"
+                        twamp-light {
+                            ipv4 {
+                                admin-state enable
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -850,6 +862,42 @@ configure {
                 local-profiles {
                     profile "administrative" {
                         default-action permit-all
+                        entry 10 {
+                            match "configure system security"
+                            action permit
+                        }
+                        entry 20 {
+                            match "show system security"
+                            action permit
+                        }
+                        entry 30 {
+                            match "tools perform security"
+                            action permit
+                        }
+                        entry 40 {
+                            match "tools dump security"
+                            action permit
+                        }
+                        entry 50 {
+                            match "admin system security"
+                            action permit
+                        }
+                        entry 100 {
+                            match "configure li"
+                            action deny
+                        }
+                        entry 110 {
+                            match "show li"
+                            action deny
+                        }
+                        entry 111 {
+                            match "clear li"
+                            action deny
+                        }
+                        entry 112 {
+                            match "tools dump li"
+                            action deny
+                        }
                         netconf {
                             base-op-authorization {
                                 action true
@@ -870,103 +918,67 @@ configure {
                                 validate true
                             }
                         }
-                        entry 10 {
-                            action permit
-                            match "configure system security"
-                        }
-                        entry 20 {
-                            action permit
-                            match "show system security"
-                        }
-                        entry 30 {
-                            action permit
-                            match "tools perform security"
-                        }
-                        entry 40 {
-                            action permit
-                            match "tools dump security"
-                        }
-                        entry 50 {
-                            action permit
-                            match "admin system security"
-                        }
-                        entry 100 {
-                            action deny
-                            match "configure li"
-                        }
-                        entry 110 {
-                            action deny
-                            match "show li"
-                        }
-                        entry 111 {
-                            action deny
-                            match "clear li"
-                        }
-                        entry 112 {
-                            action deny
-                            match "tools dump li"
-                        }
                     }
                     profile "default" {
                         entry 10 {
-                            action permit
                             match "exec"
+                            action permit
                         }
                         entry 20 {
-                            action permit
                             match "exit"
+                            action permit
                         }
                         entry 30 {
-                            action permit
                             match "help"
+                            action permit
                         }
                         entry 40 {
-                            action permit
                             match "logout"
+                            action permit
                         }
                         entry 50 {
-                            action permit
                             match "password"
+                            action permit
                         }
                         entry 60 {
-                            action deny
                             match "show config"
+                            action deny
                         }
                         entry 65 {
-                            action deny
                             match "show li"
+                            action deny
                         }
                         entry 66 {
-                            action deny
                             match "clear li"
+                            action deny
                         }
                         entry 67 {
-                            action deny
                             match "tools dump li"
+                            action deny
                         }
                         entry 68 {
-                            action deny
                             match "state li"
+                            action deny
                         }
                         entry 70 {
-                            action permit
                             match "show"
+                            action permit
                         }
                         entry 75 {
-                            action permit
                             match "state"
+                            action permit
                         }
                         entry 80 {
-                            action permit
                             match "enable-admin"
+                            action permit
                         }
                         entry 90 {
-                            action permit
                             match "enable"
+                            action permit
                         }
                         entry 100 {
-                            action deny
                             match "configure li"
+                            action deny
                         }
                     }
                 }
@@ -1150,6 +1162,34 @@ configure {
             }
         }
     }
+    test-oam {
+        link-measurement {
+            measurement-template "direct-link" {
+                admin-state enable
+                description "STAMP probe for link delay"
+                unidirectional-measurement derived
+                delay avg
+                interval 2
+                twamp-light {
+                    dscp af31
+                    fc af
+                }
+                aggregate-sample-window {
+                    multiplier 1
+                    threshold {
+                        relative 10
+                    }
+                }
+                sample-window {
+                    multiplier 5
+                    window-integrity 80
+                    threshold {
+                        relative 10
+                    }
+                }
+            }
+        }
+    }
 }
 
 persistent-indices {
@@ -1191,4 +1231,4 @@ persistent-indices {
     }
 }
 
-# Finished 2022-06-02T08:42:49.5Z
+# Finished 2023-02-17T23:28:42.0Z

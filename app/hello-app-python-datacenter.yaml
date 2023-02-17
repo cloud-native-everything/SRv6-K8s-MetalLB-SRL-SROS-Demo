@@ -28,7 +28,7 @@ spec:
   selector:
     matchLabels:
       app: hello-node-python
-  replicas: 8
+  replicas: 4
   template:
     metadata:
       labels:
