@@ -1,31 +1,29 @@
 # Segment Routing and Kubernetes Lab: SRv6 L3VPN Flexible Algoritms Demo
 # IMPORTANT: Still under development!!! Do not use!!!
-kubectl get pods -A  --context kind-edge2
 
-This lab is showing a simple configuration and verification of SRv6 on Nokia routers to signal both IGP’s shortest path and Algorithms with specific metric conditions (i.e. 10ms). All router network interfaces for transport are <b>using IPv6</b> and we are encpasulating IPv4 traffic.
+This lab is showing a demo of SRv6 on Nokia routers to signal both IGP’s shortest path and Algorithms with specific metric conditions (i.e. 10ms). All router network interfaces for transport are <b>using IPv6</b> and we are encpasulating IPv4 traffic. Additonally, we have emulated three locations using SRL swicthes for Kubernetes Clusters. And testing taffic between CNF Apps located in those different locations. 
 
-Objective: Create a traffic-engineered path between R1 and R6 that uses delay as a metric.
+One of the locations is emulating a small datacenter using a spine/leaf + border-leaf design. We have connected MetalLB speakers to the leaf swicthes to expose services directly at the border-leaf
+
+Objectives:
+* Create a traffic-engineered path between CNF Apps located on different sites, that uses delay as a metric via Flex Algorithms
 
 Conditions:
 * IGP Metrics: All IGP link metrics are 100
 * Delay Metrics: All delay metrics are 10msec with the exception of the R3-R5 link, which is 15msec.
-* We have created two different customer. Conditions of latency is only apply to one of them
+* We have created two different customers. Conditions of latency is only apply to one of them
 
-```
-docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' edge1-control-plane
-until false; do cassowary run -u http://10.254.254.240:8080 -c 4 -n 4 -p pushgateway:9091; done
-```
 
 ## Network Setup
 
 See topology on the next image:
 
-![Segment Routing SRvv6 l3vpn demo Containlerlab no ISIS Path](images/srv6-flexible-algorithms-network-orchestration-mau-nokia-topology-1.png)
+![Segment Routing SRvv6 l3vpn demo Containlerlab no ISIS Path](images/srv6-flexible-algorithms-metallb-kubernetes-containerlab-mau-nokia-topology-1.png)
 
 Next images show the same with one option of the shortest path using ISIS.
-![Segment Routing SRvv6 l3vpn demo Containlerlab with shortest ISIS Path](images/srv6-flexible-algorithms-network-orchestration-mau-nokia-topology-2.png)
+![Segment Routing SRvv6 l3vpn demo Containlerlab with shortest ISIS Path](images/srv6-flexible-algorithms-metallb-kubernetes-containerlab-mau-nokia-topology-2.png)
 
-![Segment Routing SRvv6 l3vpn demo Containlerlab with shortest ISIS Path](images/srv6-flexible-algorithms-network-orchestration-mau-nokia-topology-3.png)
+![Segment Routing SRvv6 l3vpn demo Containlerlab with shortest ISIS Path](images/srv6-flexible-algorithms-metallb-kubernetes-containerlab-mau-nokia-topology-3.png)
 
 ## SRv6 with Flexible Algorithm
 Segment Routing (SR) is applied to the IPv6 data plane using 128-bit SIDs and the SR routing header (SRH). The 128-bit SRv6 SID consists of a Locator, a Function, and an Argument.
