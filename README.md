@@ -1,5 +1,4 @@
 # Segment Routing and Kubernetes Lab: SRv6 L3VPN Flexible Algoritms Demo
-# IMPORTANT: Still under development!!! Do not use!!!
 
 This lab is showing a demo of SRv6 on Nokia routers to signal both IGP’s shortest path and Algorithms with specific metric conditions (i.e. 10ms). All router network interfaces for transport are <b>using IPv6</b> and we are encapsulating IPv4 traffic. Additonally, we have emulated three locations using SRL swicthes for Kubernetes Clusters. And testing taffic between CNF Apps located at those different locations. 
 
