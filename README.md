@@ -1,17 +1,20 @@
 # Segment Routing and Kubernetes Lab: SRv6 L3VPN Flexible Algoritms Demo
 # IMPORTANT: Still under development!!! Do not use!!!
 
-This lab is showing a demo of SRv6 on Nokia routers to signal both IGP’s shortest path and Algorithms with specific metric conditions (i.e. 10ms). All router network interfaces for transport are <b>using IPv6</b> and we are encpasulating IPv4 traffic. Additonally, we have emulated three locations using SRL swicthes for Kubernetes Clusters. And testing taffic between CNF Apps located in those different locations. 
+This lab is showing a demo of SRv6 on Nokia routers to signal both IGP’s shortest path and Algorithms with specific metric conditions (i.e. 10ms). All router network interfaces for transport are <b>using IPv6</b> and we are encapsulating IPv4 traffic. Additonally, we have emulated three locations using SRL swicthes for Kubernetes Clusters. And testing taffic between CNF Apps located at those different locations. 
 
-One of the locations is emulating a small datacenter using a spine/leaf + border-leaf design. We have connected MetalLB speakers to the leaf swicthes to expose services directly at the border-leaf
+One of the locations is emulating a small datacenter using a spine/leaf + border-leaf design. We have connected MetalLB speakers to the leaf swicthes to expose services directly at the border-leaf (BGP Load Balancer Service)
 
 Objectives:
 * Create a traffic-engineered path between CNF Apps located on different sites, that uses delay as a metric via Flex Algorithms
+* Understand the benefits of SRv6 to simplify the network setup at CNF App level
 
 Conditions:
 * IGP Metrics: All IGP link metrics are 100
 * Delay Metrics: All delay metrics are 10msec with the exception of the R3-R5 link, which is 15msec.
 * We have created two different customers. Conditions of latency is only apply to one of them
+* DC apps are exposed via Border Leaf using BGP policies and peering MetalLB speakers from Fabric Leaf to Kubernetes worker nodes.
+* One node K8s clusters at every Edge Location
 
 
 ## Network Setup
@@ -32,12 +35,100 @@ Segment Routing (SR) is applied to the IPv6 data plane using 128-bit SIDs and th
 The Locator is advertised into the IGP and is associated with an Algorithm. As a result, support for Flexible-Algorithm is inherited from day one, and a level of traffic engineering is possible without SRH overhead.
 * Flex-Algo 128 SRv6 Locators: Alg128: 2001:db8:4502:n::/64 where n is Node-ID, so 1 is R1, 6 is R6 and 7 is R7
 
+### Testing
+We have cassowary http testers running from Ege1 as CNF Apps all the way to a Simple HTTP service at Edge2 and the Datacenter. The latter is exposing the service via Load Balancer.
+The testing metrics are collected via pushgateway and collected via prometheus. There's a grafana instance to visualize the info
+
+![Cassowary HTTP tests exposed via Grafana](images/grafana-prometheus-pushgateway-cassowary-http-test-segment-routing-srv6-containerlab.png)
+
 ### Customer and VPN information
 L3VPN info and prefixes can be found in customer.yml file in this repo
 How we take care of the rest of the info like service-id and route target and route distinguisher, it's using the info from every customer. Check next pictures
 ![Segment Routing SRvv6 l3vpn demo Containlerlab Naming Logic](images/srv6-flexible-algorithms-network-orchestration-mau-nokia-logic-1.png)
 
 ![Segment Routing SRvv6 l3vpn demo Containlerlab Naming Logic](images/srv6-flexible-algorithms-network-orchestration-mau-nokia-logic-2.png)
+
+## MetalLB
+Every K8s worker is peering directly to every leaf swicth at the datacenter
+```
+A:LEAF-DC-1# show network-instance kube-ipvrf protocols bgp neighbor
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+BGP neighbor summary for network-instance "kube-ipvrf"
+Flags: S static, D dynamic, L discovered by LLDP, B BFD enabled, - disabled, * slow
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
++--------------------+------------------------------+--------------------+-------+-----------+----------------+----------------+---------------+------------------------------+
+|      Net-Inst      |             Peer             |       Group        | Flags |  Peer-AS  |     State      |     Uptime     |   AFI/SAFI    |        [Rx/Active/Tx]        |
++====================+==============================+====================+=======+===========+================+================+===============+==============================+
+| kube-ipvrf         | 1.1.1.210                    | border             | S     | 65310     | established    | 1d:2h:26m:55s  | ipv4-unicast  | [0/0/12]                     |
+| kube-ipvrf         | 192.168.101.101              | metallb-bgp        | D     | 65201     | established    | 1d:2h:28m:40s  | ipv4-unicast  | [1/1/11]                     |
++--------------------+------------------------------+--------------------+-------+-----------+----------------+----------------+---------------+------------------------------+
+```
+
+Then, everytime an app is exposed via Load Balancer service, the service IP is exposed directly in the border leaf like is showing bellow for 10.254.254.240
+
+```
+A:BORDER-DC# show network-instance kube-ipvrf route-table all
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+IPv4 unicast route table of network instance kube-ipvrf
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
++-------------------------------+-------+------------+----------------------+----------------------+----------+---------+-------------------+-------------------+
+|            Prefix             |  ID   | Route Type |     Route Owner      |      Best/Fib-       |  Metric  |  Pref   |  Next-hop (Type)  |     Next-hop      |
+|                               |       |            |                      |     status(slot)     |          |         |                   |     Interface     |
++===============================+=======+============+======================+======================+==========+=========+===================+===================+
+| 1.1.1.201/32                  | 0     | bgp-evpn   | bgp_evpn_mgr         | True/success         | 0        | 170     | 1.1.1.1           | None              |
+|                               |       |            |                      |                      |          |         | (indirect/vxlan)  |                   |
+| 1.1.1.202/32                  | 0     | bgp-evpn   | bgp_evpn_mgr         | True/success         | 0        | 170     | 1.1.1.2           | None              |
+|                               |       |            |                      |                      |          |         | (indirect/vxlan)  |                   |
+| 1.1.1.210/32                  | 8     | host       | net_inst_mgr         | True/success         | 0        | 0       | None (extract)    | None              |
+| 10.1.4.0/24                   | 0     | bgp        | bgp_mgr              | True/success         | 0        | 170     | 10.6.4.1          | None              |
+|                               |       |            |                      |                      |          |         | (indirect)        |                   |
+| 10.6.4.0/24                   | 10    | local      | net_inst_mgr         | True/success         | 0        | 0       | 10.6.4.254        | irb1.1001         |
+|                               |       |            |                      |                      |          |         | (direct)          |                   |
+| 10.6.4.254/32                 | 10    | host       | net_inst_mgr         | True/success         | 0        | 0       | None (extract)    | None              |
+| 10.6.4.255/32                 | 10    | host       | net_inst_mgr         | True/success         | 0        | 0       | None (broadcast)  | None              |
+| 10.10.10.0/24                 | 0     | bgp        | bgp_mgr              | True/success         | 0        | 170     | 10.106.4.1        | None              |
+|                               |       |            |                      |                      |          |         | (indirect)        |                   |
+| 10.106.4.0/24                 | 11    | local      | net_inst_mgr         | True/success         | 0        | 0       | 10.106.4.254      | irb1.1002         |
+|                               |       |            |                      |                      |          |         | (direct)          |                   |
+| 10.106.4.254/32               | 11    | host       | net_inst_mgr         | True/success         | 0        | 0       | None (extract)    | None              |
+| 10.106.4.255/32               | 11    | host       | net_inst_mgr         | True/success         | 0        | 0       | None (broadcast)  | None              |
+| 10.254.254.240/32             | 0     | bgp-evpn   | bgp_evpn_mgr         | True/success         | 0        | 170     | 1.1.1.1           | None              |
+|                               |       |            |                      |                      |          |         | (indirect/vxlan)  | None              |
+|                               |       |            |                      |                      |          |         | 1.1.1.2           |                   |
+|                               |       |            |                      |                      |          |         | (indirect/vxlan)  |                   |
+| 192.168.4.4/30                | 0     | bgp        | bgp_mgr              | True/success         | 0        | 170     | 10.6.4.1          | None              |
+|                               |       |            |                      |                      |          |         | (indirect)        | None              |
+|                               |       |            |                      |                      |          |         | 10.106.4.1        |                   |
+|                               |       |            |                      |                      |          |         | (indirect)        |                   |
+| 192.168.101.0/24              | 0     | bgp-evpn   | bgp_evpn_mgr         | False/success        | 0        | 170     | 1.1.1.1           | None              |
+|                               |       |            |                      |                      |          |         | (indirect/vxlan)  | None              |
+|                               |       |            |                      |                      |          |         | 1.1.1.2           |                   |
+|                               |       |            |                      |                      |          |         | (indirect/vxlan)  |                   |
+| 192.168.101.0/24              | 9     | local      | net_inst_mgr         | True/success         | 0        | 0       | 192.168.101.1     | irb0.0            |
+|                               |       |            |                      |                      |          |         | (direct)          |                   |
+| 192.168.101.1/32              | 9     | host       | net_inst_mgr         | True/success         | 0        | 0       | None (extract)    | None              |
+| 192.168.101.101/32            | 0     | bgp-evpn   | bgp_evpn_mgr         | True/success         | 0        | 170     | 1.1.1.1           | None              |
+|                               |       |            |                      |                      |          |         | (indirect/vxlan)  |                   |
+| 192.168.101.102/32            | 0     | bgp-evpn   | bgp_evpn_mgr         | True/success         | 0        | 170     | 1.1.1.2           | None              |
+|                               |       |            |                      |                      |          |         | (indirect/vxlan)  |                   |
+| 192.168.101.255/32            | 9     | host       | net_inst_mgr         | True/success         | 0        | 0       | None (broadcast)  | None              |
++-------------------------------+-------+------------+----------------------+----------------------+----------+---------+-------------------+-------------------+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+IPv4 routes total                    : 19
+IPv4 prefixes with active routes     : 18
+IPv4 prefixes with active ECMP routes: 3
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+--{ running }--[  ]--
+```
+
+Below you can see Apps exposed via Load Balancer services from the datacenter K8s cluster
+```
+[root]# kubectl get svc --context kind-datacenter
+NAME         TYPE           CLUSTER-IP      EXTERNAL-IP      PORT(S)          AGE
+hello-lb     LoadBalancer   10.96.166.199   10.254.254.240   8080:30778/TCP   26h
+kubernetes   ClusterIP      10.96.0.1       <none>           443/TCP          26h
+```
 
 ## Requeriments
 Versions used are:
