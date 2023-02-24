@@ -1,0 +1,13 @@
+clusters:
+    - name: "edge1"
+      config: "/root/xno-SRv6-23.02-1/kind/cluster_edge1.yaml"
+      image: "enc-kind-worker:1.22.2"
+    - name: "edge2"
+      config: "/root/xno-SRv6-23.02-1/kind/cluster_edge1.yaml"
+      image: "enc-kind-worker:1.22.2"
+    - name: "datacenter"
+      config: "/root/xno-SRv6-23.02-1/kind/cluster_edge1.yaml"
+      image: "enc-kind-worker:1.22.2"
+    - name: "netorch"  
+      config: "/root/xno-SRv6-23.02-1/kind/cluster_edge1.yaml"
+      image: "enc-kind-worker:1.22.2"
