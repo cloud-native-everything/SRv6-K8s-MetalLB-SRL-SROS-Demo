@@ -156,18 +156,71 @@ ip link set R2-R4 up
 ip link set R3-R5 up
 ```
 
-Use containerlab a specified topology
+## Install the required applications
+You will need:
+* docker
+* containerlab
+* golang
+* kubectl
+
+The following is an script to install those requirements in Fedora
 ```
-clab deploy --topo topo.yml
+#Install docker
+dnf -y install docker
+systemctl start docker
+systemctl enable docker
+
+
+# Install containerlab
+bash -c "$(curl -sL https://get.containerlab.dev)"
+
+# Install go
+dnf update -y
+curl -LO https://go.dev/dl/go1.17.8.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.17.8.linux-amd64.tar.gz
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$GOPATH/bin:$GOROOT/bin:$PATH
+source ~/.bashrc
+go version
+
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+curl -LO "https://dl.k8s.io/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl.sha256"
+echo "$(cat kubectl.sha256) kubectl" | sha256sum --check
+
+
+
+# Run the installation
+install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version --client
+
+#Install kind
+go install sigs.k8s.io/kind@v0.12.0
+
+# Add go path to ~/.bash_profile
+
+sed -i -e '$aexport GOROOT=/usr/local/go' ~/.bash_profile
+sed -i -e '$aexport GOPATH=$HOME/go' ~/.bash_profile
+sed -i -e '$aexport PATH=$GOPATH/bin:$GOROOT/bin:$PATH' ~/.bash_profile
+
+# Install Helm
+bash -c "$(curl -sL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3)"
 ```
-Checking elements in the lab
+
+## Pull required images for the apps
 ```
-# clab inspect --topo topo.yml
+for image in { alpine:latest busybox:latest python:latest quay.io/metallb/speaker:v0.12.1 quay.io/metallb/controller:v0.12.1 rogerw/cassowary:v0.14.1 pinrojas/cassowary:0.33 prom/pushgateway:latest }; do docker pull $image; done
 ```
-Preping origin and destination containers:
+
+## Installing the lab
+Use the following batch
 ```
-./prep_clients.sh
+## get into the directory
+./lab_scripts.sh -S
 ```
+
+
 Test connectivity (origin is 10.1.4.101 and destination is using 10.6.4.101)
 ```
 # docker exec -ti clab-srv6-demo-origin1 ping 10.6.4.101
