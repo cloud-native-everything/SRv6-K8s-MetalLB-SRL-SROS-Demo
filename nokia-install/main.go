@@ -9,6 +9,7 @@ import (
 	"log"
 	"sigs.k8s.io/kind/pkg/cmd"
 	"nokia-lab/pkg/kind"
+	"nokia-lab/pkg/dockerapi"
 )
 
 var wg = sync.WaitGroup{}
@@ -20,13 +21,16 @@ type Kind_Data struct {
 type Cluster_Data struct {
     //
     Name string    `yaml:"name"`
-    Controllers  string    `yaml:"config"`
+    Config  string    `yaml:"config"`
+    Kubeconfig  string    `yaml:"kubeconfig"`
     Image string `yaml:"image"` 
 }
 
 func main() {
+	DockerNet.DockerNetworkCreate()
+	os.Exit(10)
         kindVars := getVars()
-        fmt.Println(kindVars.Cluster[0])
+        //fmt.Println(kindVars.Cluster[0])
 	runKind(*kindVars)
 }
 
@@ -40,22 +44,19 @@ func runKind(karray Kind_Data) {
 		if err := kindApp.Run(cmd.NewLogger(), cmd.StandardIOStreams(), *Args); err != nil {
                     os.Exit(1)
                 }
-		wg.Done
+		wg.Done()
 	}
 
 	fmt.Println("--->", karray.Cluster)
 	fmt.Println(len(karray.Cluster))
         for i := 0; i < len(karray.Cluster); i++ {
 		aux := []string{"create" , "cluster" , "--name" , karray.Cluster[i].Name}
+		aux = append( aux, "--image", karray.Cluster[i].Image)
+		aux = append( aux, "--config", karray.Cluster[i].Config)
+		aux = append( aux, "--kubeconfig", karray.Cluster[i].Kubeconfig)
 		fmt.Println("--->", aux)
 		wg.Add(1)
-		if i > 0 {
-		   Add(1)
-		   go KindExec(&aux)
-	        }
-		else {
-                   KindExec(&aux)
-		}
+		go KindExec(&aux)
 
 	}
         wg.Wait()
