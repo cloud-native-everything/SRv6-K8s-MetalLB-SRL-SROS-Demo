@@ -81,15 +81,6 @@ provision_kind_worker() {
 apply_cluster_manifests() {
     kubectl create -f "${HERE}/kind/multus-daemonset.yml"
     kubectl create -f "${HERE}/kind/cni-install.yml"
-    kubectl apply -f "$CERT_MANAGER_URL"
-    local cert_mngr=""
-    while [ -z "$cert_mngr" ]; do
-        sleep 1
-        printf "."
-        local cert_mngr=$(kubectl get pods -n cert-manager -l "app.kubernetes.io/name=webhook,app.kubernetes.io/instance=cert-manager" -o jsonpath="{.items[0].metadata.name}" 2>/dev/null)
-    done
-    echo "Waiting on cert-manager pod"
-    wait_for_obj_ready 120s pod cert-manager "${cert_mngr}" 
 }
 
 kind_cluster() {
