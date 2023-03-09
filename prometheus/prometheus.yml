@@ -35,6 +35,16 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
       - targets: ['172.18.0.5:30004']      
+  - job_name: 'push-c3-e1-to-e2'
+    honor_labels: false
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['172.18.0.5:30005']      
+  - job_name: 'push-c3-e2-to-e2'
+    honor_labels: false
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['172.18.0.5:30006']      
   - job_name: 'gnmic'
     honor_labels: true
     metrics_path: /metrics

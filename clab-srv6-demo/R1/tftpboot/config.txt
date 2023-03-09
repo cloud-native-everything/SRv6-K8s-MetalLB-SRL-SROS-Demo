@@ -3,9 +3,9 @@
 # Built on Wed Jun 22 14:38:17 PDT 2022 by builder in /builds/c/225B/R2/panos/main/sros
 # Configuration format version 22.5 revision 0
 
-# Generated 2023-02-03T21:53:23.5Z by admin from 172.31.255.29
-# Commit ID 3
-#   Committed 2023-02-03T21:51:57.1Z by admin (MD-CLI) from 172.31.255.29
+# Generated 2023-03-09T15:01:50.9Z by admin from 172.31.255.29
+# Commit ID 2
+#   Committed 2023-03-09T15:01:45.3Z by admin (MD-CLI) from 172.31.255.29
 
 configure {
     apply-groups ["baseport"]
@@ -386,6 +386,18 @@ configure {
         community "vrf100202-import" {
             member "target:64500:100202" { }
         }
+        community "vrf1003101-export" {
+            member "target:64500:1003101" { }
+        }
+        community "vrf1003101-import" {
+            member "target:64500:1003101" { }
+        }
+        community "vrf1003102-export" {
+            member "target:64500:1003102" { }
+        }
+        community "vrf1003102-import" {
+            member "target:64500:1003102" { }
+        }
         prefix-list "vrf1001-prefixes" {
             prefix 10.1.4.0/24 type exact {
             }
@@ -396,6 +408,14 @@ configure {
         }
         prefix-list "vrf1002-prefixes" {
             prefix 10.10.10.0/24 type exact {
+            }
+        }
+        prefix-list "vrf1003-prefixes" {
+            prefix 10.1.103.0/24 type exact {
+            }
+        }
+        prefix-list "vrf1003-prefixes-ipv6" {
+            prefix 2001:db8:1:400::/56 type exact {
             }
         }
         policy-statement "RFC8212-allow-eBGP-import" {
@@ -578,6 +598,103 @@ configure {
                     action-type accept
                     community {
                         add ["vrf100202-export"]
+                    }
+                }
+            }
+        }
+        policy-statement "vrf1003-ebgp-export" {
+            entry 10 {
+                from {
+                    prefix-list ["vrf1003-prefixes"]
+                }
+                to {
+                    protocol {
+                        name [bgp]
+                    }
+                }
+                action {
+                    action-type accept
+                    origin igp
+                }
+            }
+        }
+        policy-statement "vrf1003-ebgp-export-ipv6" {
+            entry 10 {
+                from {
+                    prefix-list ["vrf1003-prefixes-ipv6"]
+                }
+                to {
+                    protocol {
+                        name [bgp]
+                    }
+                }
+                action {
+                    action-type accept
+                    origin igp
+                }
+            }
+        }
+        policy-statement "vrf1003-import" {
+            entry 10 {
+                from {
+                    community {
+                        name "vrf1003101-import"
+                    }
+                }
+                action {
+                    action-type accept
+                }
+            }
+            entry 20 {
+                from {
+                    community {
+                        name "vrf1003102-import"
+                    }
+                }
+                action {
+                    action-type accept
+                }
+            }
+            default-action {
+                action-type reject
+            }
+        }
+        policy-statement "vrf1003101-export" {
+            entry 10 {
+                from {
+                    protocol {
+                        name [bgp]
+                    }
+                }
+                to {
+                    protocol {
+                        name [bgp-vpn]
+                    }
+                }
+                action {
+                    action-type next-policy
+                    community {
+                        add ["vrf1003101-export"]
+                    }
+                }
+            }
+        }
+        policy-statement "vrf1003102-export" {
+            entry 10 {
+                from {
+                    protocol {
+                        name [bgp]
+                    }
+                }
+                to {
+                    protocol {
+                        name [bgp-vpn]
+                    }
+                }
+                action {
+                    action-type accept
+                    community {
+                        add ["vrf1003102-export"]
                     }
                 }
             }
@@ -938,6 +1055,8 @@ configure {
         }
         customer "1002" {
         }
+        customer "1003" {
+        }
         vprn "1001" {
             admin-state enable
             description "Test VRF for SRv6 Flex-Algorithm"
@@ -1094,6 +1213,84 @@ configure {
                 }
             }
         }
+        vprn "1003" {
+            admin-state enable
+            description "Test VRF for SRv6 Flex-Algorithm"
+            customer "1003"
+            autonomous-system 64500
+            segment-routing-v6 1 {
+                locator "Alg0-Locator" {
+                    function {
+                        end-dt4 {
+                        }
+                        end-dt6 {
+                        }
+                    }
+                }
+                locator "Alg128-Locator" {
+                    function {
+                        end-dt4 {
+                        }
+                        end-dt6 {
+                        }
+                    }
+                }
+            }
+            bgp-ipvpn {
+                segment-routing-v6 1 {
+                    admin-state enable
+                    route-distinguisher "64500:1003"
+                    vrf-import {
+                        policy ["vrf1003-import"]
+                    }
+                    vrf-export {
+                        policy ["vrf1003101-export" "vrf1003102-export"]
+                    }
+                    srv6 {
+                        instance 1
+                        default-locator "Alg128-Locator"
+                    }
+                }
+            }
+            bgp {
+                admin-state enable
+                min-route-advertisement 1
+                rapid-withdrawal true
+                ebgp-default-reject-policy {
+                    import false
+                    export false
+                }
+                group "ebgp" {
+                    admin-state enable
+                    as-override true
+                    peer-as 65001
+                    split-horizon true
+                    send-communities {
+                        extended false
+                    }
+                }
+                neighbor "192.168.4.2" {
+                    group "ebgp"
+                    family {
+                        ipv4 true
+                    }
+                    export {
+                        policy ["vrf4-ebgp-export"]
+                    }
+                }
+            }
+            interface "PE-to-CE" {
+                admin-state enable
+                ipv4 {
+                    primary {
+                        address 192.168.4.1
+                        prefix-length 30
+                    }
+                }
+                sap pxc-3.a:1003 {
+                }
+            }
+        }
         vprn "CE-1001" {
             admin-state enable
             service-id 10012023
@@ -1199,6 +1396,57 @@ configure {
                     }
                 }
                 sap 1/1/c3/1:1002 {
+                }
+            }
+        }
+        vprn "CE-1003" {
+            admin-state enable
+            service-id 10032023
+            customer "1003"
+            autonomous-system 65001
+            bgp {
+                admin-state enable
+                min-route-advertisement 1
+                rapid-withdrawal true
+                ebgp-default-reject-policy {
+                    import false
+                    export false
+                }
+                group "EBGP" {
+                    admin-state enable
+                    peer-as 64500
+                    split-horizon true
+                }
+                neighbor "192.168.4.1" {
+                    group "EBGP"
+                    family {
+                        ipv4 true
+                    }
+                    export {
+                        policy ["vrf1003-ebgp-export"]
+                    }
+                }
+            }
+            interface "CE-to-PE" {
+                admin-state enable
+                ipv4 {
+                    primary {
+                        address 192.168.4.2
+                        prefix-length 30
+                    }
+                }
+                sap pxc-3.b:1003 {
+                }
+            }
+            interface "LAN" {
+                admin-state enable
+                ipv4 {
+                    primary {
+                        address 10.1.103.1
+                        prefix-length 24
+                    }
+                }
+                sap 1/1/c3/1:1003 {
                 }
             }
         }
@@ -1572,18 +1820,23 @@ persistent-indices {
     vrtr-id {
         router-name "1001" vrtr-id 2
         router-name "1002" vrtr-id 4
+        router-name "1003" vrtr-id 6
         router-name "CE-1001" vrtr-id 3
         router-name "CE-1002" vrtr-id 5
+        router-name "CE-1003" vrtr-id 7
     }
     vrtr-if-id {
         router-name "1001" interface-name "PE-to-CE" vrtr-id 2 if-index 4
         router-name "1002" interface-name "PE-to-CE" vrtr-id 4 if-index 7
+        router-name "1003" interface-name "PE-to-CE" vrtr-id 6 if-index 10
         router-name "Base" interface-name "to_R11" vrtr-id 1 if-index 2
         router-name "Base" interface-name "to_R12" vrtr-id 1 if-index 3
         router-name "CE-1001" interface-name "CE-to-PE" vrtr-id 3 if-index 5
         router-name "CE-1001" interface-name "LAN" vrtr-id 3 if-index 6
         router-name "CE-1002" interface-name "CE-to-PE" vrtr-id 5 if-index 8
         router-name "CE-1002" interface-name "LAN" vrtr-id 5 if-index 9
+        router-name "CE-1003" interface-name "CE-to-PE" vrtr-id 7 if-index 11
+        router-name "CE-1003" interface-name "LAN" vrtr-id 7 if-index 12
     }
     chassis-mac {
         client pxc index 0 pool 1 offset 1
@@ -1621,4 +1874,4 @@ persistent-indices {
     }
 }
 
-# Finished 2023-02-03T21:53:23.5Z
+# Finished 2023-03-09T15:01:50.9Z

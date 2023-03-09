@@ -4,10 +4,10 @@
       "generated-by": "SRLINUX",
       "name": "",
       "comment": "",
-      "created": "2023-02-03T22:02:05.181Z",
+      "created": "2023-03-09T15:42:00.884Z",
       "release": "v21.6.4",
       "enabled-yang-features": ["srl_nokia-features:anycast-gw", "srl_nokia-features:bridged", "srl_nokia-features:evpn", "srl_nokia-features:evpn-advertise-arp-nd-only-with-mac-table-entry", "srl_nokia-features:evpn-mh-pref-alg", "srl_nokia-features:evpn-mh-single-active", "srl_nokia-features:fixed", "srl_nokia-features:future-21-6", "srl_nokia-features:future-21-6-2", "srl_nokia-features:future-21-6-3", "srl_nokia-features:lacp-fallback", "srl_nokia-features:lag", "srl_nokia-features:mirroring", "srl_nokia-features:platform-7220-d3", "srl_nokia-features:port-breakout", "srl_nokia-features:ra-guard", "srl_nokia-features:reload-delay", "srl_nokia-features:storm-control", "srl_nokia-features:trident3", "srl_nokia-features:vxlan", "srl_nokia-features:warm-reboot"],
-      "checksum": "e01d086d2a2e8c7a$2cb95307e50604acff1fc073d0548f221e0f9410"
+      "checksum": "d0f653e6de2f87bb$dd4df3bdc375b490dac7fb033d14a2241819361e"
     },
     "build": {
       "git-branch": "SRL_21_6_B1",
@@ -1971,6 +1971,17 @@
               }
             }
           }
+        },
+        {
+          "index": 1003,
+          "type": "srl_nokia-interfaces:bridged",
+          "srl_nokia-interfaces-vlans:vlan": {
+            "encap": {
+              "single-tagged": {
+                "vlan-id": 1003
+              }
+            }
+          }
         }
       ]
     },
@@ -2034,6 +2045,17 @@
             "address": [
               {
                 "ip-prefix": "10.106.4.254/24"
+              }
+            ]
+          }
+        },
+        {
+          "index": 1003,
+          "admin-state": "enable",
+          "ipv4": {
+            "address": [
+              {
+                "ip-prefix": "10.6.103.254/24"
               }
             ]
           }
@@ -2335,6 +2357,18 @@
       ]
     },
     {
+      "name": "1003-macvrf",
+      "type": "srl_nokia-network-instance:mac-vrf",
+      "interface": [
+        {
+          "name": "ethernet-1/20.1003"
+        },
+        {
+          "name": "irb1.1003"
+        }
+      ]
+    },
+    {
       "name": "default",
       "interface": [
         {
@@ -2514,6 +2548,14 @@
               "peer-group": "CE-Router",
               "transport": {
                 "local-address": "10.6.4.254"
+              }
+            },
+            {
+              "peer-address": "10.6.103.1",
+              "peer-as": 65001,
+              "peer-group": "CE-Router",
+              "transport": {
+                "local-address": "10.6.103.254"
               }
             },
             {

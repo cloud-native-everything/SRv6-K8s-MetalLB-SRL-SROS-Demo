@@ -1,0 +1,252 @@
+########
+    admin-state enable
+    description "Test VRF for SRv6 Flex-Algorithm"
+    customer "1003"
+    autonomous-system 64500
+    segment-routing-v6 1 {
+        locator "Alg0-Locator" {
+            function {
+                end-dt4 {
+                }
+                end-dt6 {
+                }
+            }
+        }
+        locator "Alg128-Locator" {
+            function {
+                end-dt4 {
+                }
+                end-dt6 {
+                }
+            }
+        }
+    }
+    bgp-ipvpn {
+        segment-routing-v6 1 {
+            admin-state enable
+            route-distinguisher "64500:1003"
+            vrf-import {
+                policy ["vrf1003-import"]
+            }
+            vrf-export {
+                policy ["vrf1003101-export" "vrf1003102-export"]
+            }
+            srv6 {
+                instance 1
+                default-locator "Alg128-Locator"
+            }
+        }
+    }
+    bgp {
+        admin-state enable
+        min-route-advertisement 1
+        rapid-withdrawal true
+        ebgp-default-reject-policy {
+            import false
+            export false
+        }
+        group "ebgp" {
+            admin-state enable
+            as-override true
+            peer-as 65001
+            split-horizon true
+            send-communities {
+                extended false
+            }
+        }
+        neighbor "192.168.4.2" {
+            group "ebgp"
+            family {
+                ipv4 true
+            }
+            export {
+                policy ["vrf4-ebgp-export"]
+            }
+        }
+    }
+    interface "PE-to-CE" {
+        admin-state enable
+        ipv4 {
+            primary {
+                address 192.168.4.1
+                prefix-length 30
+            }
+        }
+        sap pxc-3.a:1003 {
+        }
+    }
+
+#####
+
+    admin-state enable
+    service-id 10032023
+    customer "1003"
+    autonomous-system 65001
+    bgp {
+        admin-state enable
+        min-route-advertisement 1
+        rapid-withdrawal true
+        ebgp-default-reject-policy {
+            import false
+            export false
+        }
+        group "EBGP" {
+            admin-state enable
+            peer-as 64500
+            split-horizon true
+        }
+        neighbor "192.168.4.1" {
+            group "EBGP"
+            family {
+                ipv4 true
+            }
+            export {
+                policy ["vrf1003-ebgp-export"]
+            }
+        }
+    }
+    interface "CE-to-PE" {
+        admin-state enable
+        ipv4 {
+            primary {
+                address 192.168.4.2
+                prefix-length 30
+            }
+        }
+        sap pxc-3.b:1003 {
+        }
+    }
+    interface "LAN" {
+        admin-state enable
+        ipv4 {
+            primary {
+                address 10.1.103.1
+                prefix-length 24
+            }
+        }
+        sap 1/1/c3/1:1003 {
+        }
+    }
+
+######
+/configure policy-options
+
+    community "vrf1003101-export" {
+        member "target:64500:1003101" { }
+    }
+    community "vrf1003101-import" {
+        member "target:64500:1003101" { }
+    }
+    community "vrf1003102-export" {
+        member "target:64500:1003102" { }
+    }
+    community "vrf1003102-import" {
+        member "target:64500:1003102" { }
+    }
+    prefix-list "vrf1003-prefixes" {
+        prefix 10.1.103.0/24 type exact {
+        }
+    }
+    prefix-list "vrf1003-prefixes-ipv6" {
+        prefix 2001:db8:1:400::/56 type exact {
+        }
+    }
+    policy-statement "vrf1003-ebgp-export" {
+        entry 10 {
+            from {
+                prefix-list ["vrf1003-prefixes"]
+            }
+            to {
+                protocol {
+                    name [bgp]
+                }
+            }
+            action {
+                action-type accept
+                origin igp
+            }
+        }
+    }
+    policy-statement "vrf1003-ebgp-export-ipv6" {
+        entry 10 {
+            from {
+                prefix-list ["vrf1003-prefixes-ipv6"]
+            }
+            to {
+                protocol {
+                    name [bgp]
+                }
+            }
+            action {
+                action-type accept
+                origin igp
+            }
+        }
+    }
+    policy-statement "vrf1003-import" {
+        entry 10 {
+            from {
+                community {
+                    name "vrf1003101-import"
+                }
+            }
+            action {
+                action-type accept
+            }
+        }
+        entry 20 {
+            from {
+                community {
+                    name "vrf1003102-import"
+                }
+            }
+            action {
+                action-type accept
+            }
+        }
+        default-action {
+            action-type reject
+        }
+    }
+    policy-statement "vrf1003101-export" {
+        entry 10 {
+            from {
+                protocol {
+                    name [bgp]
+                }
+            }
+            to {
+                protocol {
+                    name [bgp-vpn]
+                }
+            }
+            action {
+                action-type next-policy
+                community {
+                    add ["vrf1003101-export"]
+                }
+            }
+        }
+    }
+    policy-statement "vrf1003102-export" {
+        entry 10 {
+            from {
+                protocol {
+                    name [bgp]
+                }
+            }
+            to {
+                protocol {
+                    name [bgp-vpn]
+                }
+            }
+            action {
+                action-type accept
+                community {
+                    add ["vrf1003102-export"]
+                }
+            }
+        }
+    }
+
+#####
